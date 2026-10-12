@@ -96,12 +96,19 @@ th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vert
 .pa-core small{color:var(--t3);font-size:12px}.pa-ring{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}.pa-ring span{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:2px 8px}
 .cmp{display:grid;grid-template-columns:1fr 1.4fr;gap:14px}.cmp .star{border:2px solid var(--gold);background:var(--goldl)!important}.chat{line-height:1.9}
 @media(max-width:900px){.road.r5{grid-template-columns:1fr 1fr}.pa,.cmp{grid-template-columns:1fr}.pa-core{aspect-ratio:auto;border-radius:16px}}
+.appx{background:linear-gradient(180deg,#fbfbfc,#fff)!important}
+.appx .kicker{color:var(--gold)}
+.amap a{text-decoration:none;color:inherit;transition:.15s}.amap a:hover{border-color:var(--p);transform:translateY(-2px)}.amap small{display:block;margin-top:8px;color:var(--t3);font-size:12px}
+.tri{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.tri .card{text-align:center}.tri .hot{border:2px solid var(--gold);background:var(--goldl)!important}
+.life{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.toc a.ap{background:#e8d9a8}.toc a.ap.on{background:var(--gold)}
+@media(max-width:900px){.tri,.life{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div>
 <nav class="toc" id="toc"></nav>
-<div class="nav"><button onclick="move(-1)" title="上一页 ↑">↑</button><button onclick="move(1)" title="下一页 ↓">↓</button><button onclick="fs()" title="全屏 F">⛶</button></div>
+<div class="nav"><button onclick="move(-1)" title="上一页 ↑">↑</button><button onclick="move(1)" title="下一页 ↓">↓</button><button onclick="fs()" title="全屏 F">⛶</button><button onclick="document.getElementById('appendix').scrollIntoView()" title="附录 A">A</button></div>
 
 <!-- 1 封面 -->
 <section>
@@ -404,10 +411,112 @@ th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vert
   <p class="lead">谢谢各位老师</p>
 </section>
 
+
+<!-- ============ 附录 · 备用页 ============ -->
+<section class="appx" id="appendix">
+  <div class="kicker">附录 · 备用页（被问到再翻）</div>
+  <h2>方案还能往哪长：六个方向</h2>
+  <div class="grid g3 amap">
+    <a class="card" href="#a1"><span class="tag gold">A1 三方补齐</span><h3>游戏方视角</h3><p>玩家反馈雷达 · 官方合作精准入口</p><small>被问：商业模式怎么扩展</small></a>
+    <a class="card" href="#a2"><span class="tag">A2 AI 可信度</span><h3>分身不说错、不跑偏</h3><p>版本过时识别 · 老张抽查 · 人设一致性</p><small>被问：AI 答错怎么办</small></a>
+    <a class="card" href="#a3"><span class="tag o">A3 粉丝生命周期</span><h3>留住、离开、回来</h3><p>新粉引导 · 退坑识别 · 回流钩子 · 粉丝互联</p><small>被问：留存怎么做</small></a>
+    <a class="card" href="#a4"><span class="tag g">A4 KOL 与市场</span><h3>反哺创作 · 中小 UP 主</h3><p>选题雷达 · 分层定价 · 多 UP 主模板</p><small>被问：市场有多大</small></a>
+    <a class="card" href="#a5"><span class="tag w">A5 平台战略</span><h3>为什么是 QQ</h3><p>社交链优势 · 防止 KOL 带粉出走 · 跨 UP 主网络</p><small>被问：为什么不用微信群 / Discord</small></a>
+    <a class="card" href="#a6"><span class="tag r">A6 伦理与验证</span><h3>情感依赖 · 未成年人 · 对照实验</h3><p>健康提醒 · 未成年保护 · 4 周 A/B 设计</p><small>被问：伦理风险 / 数据依据</small></a>
+  </div>
+  <p class="note">快捷键：按 <b>A</b> 回到本页。</p>
+</section>
+
+<section class="appx" id="a1">
+  <div class="kicker">A1 · 三方补齐：游戏方视角</div>
+  <h2>23 个群的简报，对游戏方同样值钱</h2>
+  <div class="tri">
+    <div class="card"><span class="tag o">粉丝</span><p>被记住、找到同好</p></div>
+    <div class="card"><span class="tag">KOL</span><p>省力、看清、变现</p></div>
+    <div class="card"><span class="tag g">QQ 平台</span><p>活跃留存、私域留存</p></div>
+    <div class="card hot"><span class="tag gold">游戏方 · 新补</span><p>玩家反馈 · 精准触达</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><span class="tag gold">玩家反馈雷达</span><h3>按版本汇总的真实声音</h3><ul><li>哪些关卡卡人最多（"深渊 12 层下半" 6 群 98 次）</li><li>哪些活动被吐槽、哪些角色被讨论</li><li>情绪曲线：版本前瞻后、卡池上线后</li></ul><p class="note">比问卷更真实：来自粉丝自发讨论，不是被问出来的</p></div>
+    <div class="card"><span class="tag gold">官方合作精准入口</span><h3>找对的群、对的人</h3><ul><li>新角色上线 → 找"在练同类角色"的粉丝做试玩</li><li>版本前瞻 → 兑换码按会员 / 核心粉优先</li><li>回流活动 → 定向推给退坑粉丝</li></ul><p class="note">合作内容本身是福利，不伤体验</p></div>
+  </div>
+  <div class="say">一句话：<b>KOL 群是游戏方离真实玩家最近的地方</b>，Agent 把这里的声音结构化地带回给游戏方。</div>
+</section>
+
+<section class="appx" id="a2">
+  <div class="kicker">A2 · AI 可信度</div>
+  <h2>让分身"不说错、不跑偏、跟得上"</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">不说错</span><h3>知识有版本号</h3><p>每条攻略标注适用版本。版本更新后，过时内容自动降权，回答时标"仅供参考"，并提醒老张"这 5 期视频的配队已过时"。</p></div>
+    <div class="card"><span class="tag o">不跑偏</span><h3>老张定期抽查</h3><p>每周推送 10 条"分身代你说过的话"，老张标"像我 / 不像我 / 说错了"。打回的样本用于修正人设和知识。</p></div>
+    <div class="card"><span class="tag g">跟得上</span><h3>人设随本人更新</h3><p>老张风格变了（从搞笑转硬核），用最新视频和动态更新人设；重大变化需老张确认后生效。</p></div>
+  </div>
+  <div class="flow"><span>粉丝提问</span><i>→</i><span>检索老张内容（带版本）</span><i>→</i><span>置信度判断</span><i>→</i><span>高：回答 + 出处</span><i>/</i><span>低：不编造，转本人</span><i>→</i><span>老张抽查回流</span></div>
+  <p class="note">护栏指标：错误回答率 ≤ 2.5% · 老张抽查"说错了"占比 · 粉丝纠错次数</p>
+</section>
+
+<section class="appx" id="a3">
+  <div class="kicker">A3 · 粉丝生命周期</div>
+  <h2>不追求每个人都留下，让离开的人有理由回来</h2>
+  <div class="life">
+    <div class="card"><span class="tag">新粉 7 天</span><h3>引导</h3><p>Day1 攻略入门 → Day3 老张代表作 → Day7 第一次群活动</p></div>
+    <div class="card"><span class="tag o">活跃期</span><h3>加深</h3><p>记忆跟进、本人高光时刻、里程碑（入群 100 天）</p></div>
+    <div class="card"><span class="tag w">沉默期</span><h3>轻关怀</h3><p>10 天未发言 → 一次不带商业的问候 + 老张后台预警</p></div>
+    <div class="card"><span class="tag gray">退坑期</span><h3>体面放手</h3><p>长期不上线 / 开始聊别的游戏 → 降为月度低频</p></div>
+    <div class="card"><span class="tag g">回流</span><h3>钩子</h3><p>"你练的那个角色加强了" · 老张大视频 · 新版本</p></div>
+  </div>
+  <div class="card"><span class="tag o">粉丝之间的关系</span><h3>群的本质是社区，不只是粉丝↔老张一条线</h3><p>总一起组队的两人 → 建议加好友；老粉带新人 → 获得"群内导师"头衔和积分。<b>关系网络越密，群对单个 KOL 的依赖越低</b>——老张停更一个月，群也不会散。</p></div>
+</section>
+
+<section class="appx" id="a4">
+  <div class="kicker">A4 · KOL 与市场</div>
+  <h2>从运营工具到创作助手，从头部到长尾</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">反哺创作</span><h3>粉丝数据 → 下期做什么</h3><ul><li><b>选题雷达</b>：粉丝问得最多、视频还没讲过的问题</li><li><b>选题验证</b>：先在核心粉群小范围预告，看反应</li><li><b>发布时机</b>：按粉丝活跃时段建议发布时间</li></ul><p class="note">从"帮我省时间"到"帮我做更好的内容"，付费意愿更强</p></div>
+    <div class="card"><span class="tag g">中小 UP 主才是大盘</span><h3>分层产品 + 分层收费</h3>
+      <table><tr><th>UP 主</th><th>痛点</th><th>版本</th><th>收费</th></tr>
+      <tr><td>头部 50 万+</td><td>群太多管不过来</td><td>完整版 + 商单</td><td>收入分成</td></tr>
+      <tr><td>腰部 5–50 万</td><td>想变现缺工具</td><td>分身 + 订阅</td><td>订阅分成</td></tr>
+      <tr><td>长尾 &lt; 5 万</td><td>群冷、没人说话</td><td>免费基础版</td><td>平台流量扶持</td></tr></table></div>
+  </div>
+  <div class="say">V4 的验收：把老张的配置做成模板，<b>换一个 UP 主一天内上线</b>。</div>
+</section>
+
+<section class="appx" id="a5">
+  <div class="kicker">A5 · 平台战略</div>
+  <h2>为什么是 QQ，而不是微信群或 Discord</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">用户</span><h3>年轻、游戏属性强</h3><p>游戏 KOL 私域的事实承载地，入群、群公告、群活动都是现成心智</p></div>
+    <div class="card"><span class="tag o">社交链</span><h3>好友关系可用</h3><p>"你的 3 个好友都在这个群" → 邀请一起参加水友赛；QQ 频道、空间可联动</p></div>
+    <div class="card"><span class="tag g">沉淀</span><h3>关系资产留在 QQ</h3><p>粉丝档案、亲密度、和老张的互动史都在 QQ，<b>KOL 带粉出走的迁移成本极高</b></p></div>
+  </div>
+  <div class="card"><span class="tag gold">更远一步：跨 UP 主的关系网络</span><p>同一个玩家同时关注攻略、剧情、抽卡三类 UP 主 → 分身发现粉丝重合度高 → 建议联动直播 / 互推；小 UP 主冷启动时，平台把"兴趣匹配但还没关注"的粉丝推荐过去。<b>从单个工具升级为平台的关系网络。</b></p></div>
+</section>
+
+<section class="appx" id="a6">
+  <div class="kicker">A6 · 伦理与验证</div>
+  <h2>分身越像真人，越要有边界；数据是假设，就给出验证方法</h2>
+  <div class="grid g2">
+    <div class="card" style="border-color:var(--r)"><span class="tag r">情感依赖与未成年人</span><ul>
+      <li><b>健康提醒</b>：深夜长时间聊天、持续负面情绪 → 提示休息</li>
+      <li><b>明确身份</b>：严重情绪问题时，分身说明"我是 AI"，建议找身边的人并给出求助渠道</li>
+      <li><b>未成年保护</b>：更短的使用时长、不推商业内容、不开语音克隆</li>
+      <li><b>多模态边界</b>：视频分身、直播间分身越逼真，越要强制 AI 标识和本人授权</li></ul></div>
+    <div class="card"><span class="tag g">对照实验：证明"被记住"有用</span>
+      <table><tr><th>设计</th><th>内容</th></tr>
+      <tr><td>分组</td><td>同一 UP 主两个相似的群：A 开分身记忆，B 不开</td></tr>
+      <tr><td>周期</td><td>4 周</td></tr>
+      <tr><td>主指标</td><td>新粉 7 日留存 · 二次回访率</td></tr>
+      <tr><td>关键假设</td><td>被本人回复过的粉丝 30 日留存显著更高</td></tr>
+      <tr><td>护栏</td><td>退群率 · 点踩率 · 错误回答率不升</td></tr></table>
+      <p class="note">假设成立 → "把老张的注意力分给对的人"有数据支撑</p></div>
+  </div>
+</section>
 <script>
 const S = [...document.querySelectorAll('section')];
-S.forEach((s, i) => s.insertAdjacentHTML('beforeend', `<span class="num">${i + 1} / ${S.length}</span>`));
-document.getElementById('toc').innerHTML = S.map((_, i) => `<a href="#" data-i="${i}"></a>`).join('');
+const MAIN = S.filter(x => !x.classList.contains('appx')).length;
+S.forEach((s, i) => s.insertAdjacentHTML('beforeend', `<span class="num">${s.classList.contains('appx') ? '附录' : (i + 1) + ' / ' + MAIN}</span>`));
+document.getElementById('toc').innerHTML = S.map((s, i) => `<a href="#" data-i="${i}" class="${s.classList.contains('appx') ? 'ap' : ''}"></a>`).join('');
 document.getElementById('toc').onclick = e => { const a = e.target.closest('a'); if (a) { e.preventDefault(); S[+a.dataset.i].scrollIntoView(); } };
 let cur = 0;
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { cur = S.indexOf(e.target); document.querySelectorAll('.toc a').forEach((a, i) => a.classList.toggle('on', i === cur)); document.getElementById('progress').style.width = ((cur + 1) / S.length * 100) + '%'; } }), { threshold: .55 });
@@ -419,6 +528,7 @@ document.addEventListener('keydown', e => {
   if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); move(1); }
   if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); move(-1); }
   if (e.key === 'f' || e.key === 'F') fs();
+  if (e.key === 'a' || e.key === 'A') document.getElementById('appendix').scrollIntoView();
 });
 </script>
 </body>
