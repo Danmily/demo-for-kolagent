@@ -1,5 +1,6 @@
 const $ = s => document.querySelector(s);
-const chat = $('#chat'), log = $('#log');
+const groupChat = $('#chat'), log = $('#log');
+let chat = groupChat;
 /* 三个角色：群助手（工具）· 老张数字分身（关系）· 老张本人（关键时刻） */
 const BOT = { name: '群助手', av: '<div class="avatar bot">🤖</div>', badge: '<span class="badge bot">机器人</span>' };
 const CLONE = { name: '老张', av: '<div class="avatar ai">张</div>', badge: '<span class="badge">数字分身·AI</span>' };
@@ -17,6 +18,7 @@ function other(name, av, html, lv = '') {
 let override = null;
 function me(text) {
   if (override) { text = override; override = null; }
+  if (chat !== groupChat) text = text.replace(/^@\S+\s*/, '');
   chat.insertAdjacentHTML('beforeend', `<div class="row me">${ME.av}<div class="body"><div class="name">${ME.name}<span class="lv">粉丝牌6</span></div><div class="bubble">${text}</div></div></div>`); scroll();
 }
 function say(who, html, raw = false) {
@@ -382,3 +384,42 @@ drawCharts = function () {
     { label: '直播打赏', data: [1800, 2100, 2400, 2800], backgroundColor: C[3] }] }, options: { ...opt, scales: { x: { stacked: true }, y: { stacked: true } } } });
   mk('c-income-pie', { type: 'doughnut', data: { labels: ['商单', '订阅', '周边/二创', '直播打赏'], datasets: [{ data: [42000, 18640, 4980, 2800], backgroundColor: C }] }, options: opt });
 };
+
+/* ---------- Chatbot 视图：两个独立窗口 ---------- */
+const QS = {
+  clone: [['今晚播吗？', 'live'], ['深渊12层下半怎么配？', 'guide'], ['最近更新了啥？', 'video'], ['你还记得我吗？', 'memory'], ['又歪了……', 'emo'], ['能出一期剧情解析吗？', 'say'], ['手机玩着卡，你用的啥？', 'gear']],
+  bot: [['签到', 'sign'], ['抽奖', 'draw'], ['找人一起打周本', 'team'], ['最近有什么活动？', 'game'], ['会员有什么权益？', 'sub']]
+};
+let role = 'clone';
+const used = { clone: new Set(), bot: new Set() };
+function suggHTML(r, n) { return QS[r].filter(([, k]) => !used[r].has(k)).slice(0, n).map(([q, k]) => `<button data-q="${q}" data-k="${k}">${q}</button>`).join(''); }
+function refreshSugg(r) { document.querySelector(`.sugg[data-r=${r}]`).innerHTML = suggHTML(r, 5); const sb = $('#sb-' + r); sb.className = 'sugg-bar ' + r; sb.innerHTML = $('#chat-' + r).children.length > 1 ? suggHTML(r, 3) : ''; }
+function ask(r, q, k) {
+  if (!state.joined) { toast('先在群聊视图完成入群'); return; }
+  chat = $('#chat-' + r); used[r].add(k); override = q;
+  step(r === 'clone' ? '私聊·老张分身' : '私聊·群助手', `模拟提问「${q}」`);
+  S[k]();
+  setTimeout(() => { refreshSugg(r); chat.scrollTop = chat.scrollHeight; }, 1600);
+}
+function setRole(r) { role = r; document.querySelectorAll('.dmtabs button').forEach(b => b.classList.toggle('on', b.dataset.r === r)); document.querySelectorAll('.dmwin').forEach(w => w.classList.toggle('on', w.id === 'win-' + r)); chat = $('#chat-' + r); }
+document.querySelectorAll('.dmtabs button').forEach(b => b.onclick = () => setRole(b.dataset.r));
+document.querySelectorAll('#dm').forEach(d => d.addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) ask(role, b.dataset.q, b.dataset.k); }));
+document.querySelectorAll('.dminput').forEach(box => {
+  const inp = box.querySelector('input'), r = inp.dataset.r;
+  const go2 = () => { const v = inp.value.trim(); if (!v) return; inp.value = ''; const hit = rules.find(([re]) => re.test(v));
+    if (hit) return ask(r, v, hit[1]);
+    if (!state.joined) return toast('先在群聊视图完成入群');
+    chat = $('#chat-' + r); me(v); reply(() => r === 'clone' ? clone('这个我不太确定，不想瞎说，帮你转给老张本人了 🙏') : bot('我只会签到、抽奖、组队、查活动～聊天请切到老张分身'), 500, r === 'clone' ? CLONE : BOT); };
+  box.querySelector('button').onclick = go2; inp.onkeydown = e => e.key === 'Enter' && go2();
+});
+function setMode(m) {
+  document.querySelectorAll('.modeswitch button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  if (m === 'dm' && !state.joined) { toast('先完成入群申请，再进入 Chatbot 视图'); document.querySelectorAll('.modeswitch button').forEach(b => b.classList.toggle('on', b.dataset.m === 'group')); return; }
+  $('#dm').classList.toggle('on', m === 'dm');
+  if (m === 'dm') { setRole(role); step('视图切换', '进入 Chatbot 视图：老张分身与群助手各一个独立窗口'); } else chat = groupChat;
+}
+document.querySelectorAll('.modeswitch button').forEach(b => b.onclick = () => setMode(b.dataset.m));
+refreshSugg('clone'); refreshSugg('bot');
+// 群聊里的剧本/面板操作始终写回群聊
+const _J = $('#journey').onclick; $('#journey').onclick = e => { setMode('group'); chat = groupChat; _J(e); };
+document.querySelectorAll('[data-demo]').forEach(b => b.addEventListener('click', () => { if ($('#dm').classList.contains('on')) setMode('group'); }, true));

@@ -19,6 +19,7 @@
 <!-- ================= 粉丝端 ================= -->
 <main id="fan" class="view on">
   <section class="phone-wrap">
+    <div class="modeswitch"><button class="on" data-m="group">💬 群聊视图</button><button data-m="dm">🤖 Chatbot 视图</button></div>
     <div class="phone">
       <div class="qq-head">
         <span class="back">‹</span>
@@ -37,6 +38,19 @@
         <input id="msg" placeholder="和老张分身聊聊…">
         <button class="plus" id="plus">⊕</button>
         <button id="send">发送</button>
+      </div>
+      <div class="dm" id="dm">
+        <div class="dmtabs"><button class="on" data-r="clone"><span class="avatar ai sm">张</span>老张分身</button><button data-r="bot"><span class="avatar bot sm">🤖</span>群助手</button></div>
+        <div class="dmwin on" id="win-clone">
+          <div class="dmchat" id="chat-clone"><div class="intro clone"><div class="avatar ai xl">张</div><b>老张 · 数字分身</b><small>数字分身·AI · 已获老张授权</small><p>我学过老张 128 期视频，记得你聊过的事。<br>重要的话，我会转给老张本人。</p><div class="sugg" data-r="clone"></div></div></div>
+          <div class="sugg-bar" id="sb-clone"></div>
+          <div class="dminput"><input placeholder="和老张聊点什么…" data-r="clone"><button data-r="clone">发送</button></div>
+        </div>
+        <div class="dmwin" id="win-bot">
+          <div class="dmchat" id="chat-bot"><div class="intro bot"><div class="avatar bot xl">🤖</div><b>群助手</b><small>机器人 · 工具服务</small><p>签到、抽奖、组队、活动查询、会员服务找我。<br>想聊天请找老张分身。</p><div class="sugg" data-r="bot"></div></div></div>
+          <div class="sugg-bar" id="sb-bot"></div>
+          <div class="dminput"><input placeholder="签到 / 组队 / 活动…" data-r="bot"><button data-r="bot">发送</button></div>
+        </div>
       </div>
       <div class="home" id="home">
         <div class="hhead"><span onclick="closeHome()">‹ 返回群聊</span><b>我和老张</b><span></span></div>
