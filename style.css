@@ -244,3 +244,7 @@ b.ok,.ok{color:var(--au-success)}b.warn,.warn{color:var(--au-warning)}b.bad,.bad
 .dminput{display:flex;gap:8px;padding:8px 10px 14px;border-top:1px solid var(--line);background:#fff}
 .dminput input{flex:1;border:0;background:var(--au-fill-2);border-radius:18px;padding:9px 14px;font:inherit;outline:none}
 .dminput button{background:#ff7a45;color:#fff;border-radius:18px;padding:0 16px}#win-bot .dminput button{background:#4e5969}
+.lv0,.lv1,.lv2{display:inline-block;font-size:10px;border-radius:3px;padding:0 4px;margin-right:4px;color:#fff;background:#86909c}.lv1{background:#165dff}.lv2{background:#00b42a}
+.jsec.l0{background:#f7f8fa;border:1px dashed var(--line)}.jsec.l0 .kv{font-size:12px;padding:3px 0}
+.skip{font-size:12px;color:var(--sub);text-align:right;cursor:pointer}
+details.jsec summary{cursor:pointer;list-style:none;font-size:13px}details.jsec summary i{font-style:normal;color:var(--sub);font-size:12px}

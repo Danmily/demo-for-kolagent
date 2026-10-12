@@ -59,13 +59,17 @@
       <div class="join" id="join">
         <div class="jhead">申请加入群聊</div>
         <div class="jgroup"><div class="avatar big">张</div><div><b>提瓦特老张の攻略小屋</b><small>核心粉丝群 · 486/500</small></div></div>
-        <div class="jsec"><b>① B 站身份授权 <i>可选</i></b>
-          <label class="auth"><input type="checkbox" id="auth" checked> 授权读取粉丝牌等级、关注时长、近期观看（仅用于群内服务）</label>
-          <div class="authinfo" id="authinfo">已读取：粉丝牌 <b>6 级</b> · 关注 <b>12 天</b> · 近期看过《深渊配队》×3</div></div>
-        <div class="jsec"><b>② 你进群最想做什么？</b>
-          <div class="opts" id="opts"><span class="on" data-v="问攻略">📖 问攻略</span><span data-v="找队友">🤝 找队友</span><span data-v="追更UP主">🔔 追更 UP 主</span><span data-v="随便看看">👀 随便看看</span></div></div>
-        <div class="jsec"><b>③ 入群口令</b><input value="旅行者冲冲冲" readonly class="jinput"></div>
-        <div class="jrec" id="jrec">✅ 匹配度高：推荐加入<b>核心粉丝群</b></div>
+        <div class="jsec l0"><b><span class="lv0">L0</span> 自动记录 <i>无需操作</i></b>
+          <div class="kv"><span>申请群</span><b>核心粉丝群</b></div>
+          <div class="kv"><span>来源</span><b>B站视频《深渊满星配队》简介</b></div>
+          <div class="kv"><span>入群口令</span><b>旅行者冲冲冲 ✓ 答对</b></div></div>
+        <div class="jsec"><b><span class="lv1">L1</span> 你进群最想做什么？ <i>可跳过</i></b>
+          <div class="opts" id="opts"><span data-v="找攻略答案">📖 找攻略答案</span><span data-v="找队友">🤝 找队友</span><span data-v="追更UP主">🔔 追更 UP 主</span><span data-v="随便看看">👀 随便看看</span></div>
+          <a class="skip" id="skip">跳过，直接进群 ›</a></div>
+        <details class="jsec opt"><summary><b>B 站身份授权</b> <i>可选 · 默认关闭</i></summary>
+          <label class="auth"><input type="checkbox" id="auth"> 授权读取粉丝牌等级、关注时长（仅用于群内服务）</label>
+          <div class="authinfo" id="authinfo" style="display:none">已读取：粉丝牌 <b>6 级</b> · 关注 <b>12 天</b></div></details>
+        <div class="jrec" id="jrec">📝 不填也能进群，档案会随互动自动完善</div>
         <button class="jbtn" id="jbtn">申请入群</button>
         <p class="jnote">筛选结果只用于推荐合适的群，不额外提高门槛</p>
       </div>
@@ -84,7 +88,7 @@
     <p class="hint">左侧每次交互，这里实时展示 Agent 的识别与路由，对应 PRD 五类能力。</p>
     <div class="card profile">
       <div class="ph">粉丝档案 · 小雷</div>
-      <div class="kv"><span>层级</span><b id="p-level">普通粉丝 · 粉丝牌 6 级</b></div>
+      <div class="kv"><span>层级</span><b id="p-level">（待入群）</b></div>
       <div class="kv"><span>来意</span><b id="p-intent">—</b></div>
       <div class="kv"><span>来源</span><b id="p-src">—</b></div>
       <div class="kv"><span>订阅</span><b id="p-sub">未订阅</b></div>

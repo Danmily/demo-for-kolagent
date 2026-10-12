@@ -6,7 +6,7 @@ const BOT = { name: '群助手', av: '<div class="avatar bot">🤖</div>', badge
 const CLONE = { name: '老张', av: '<div class="avatar ai">张</div>', badge: '<span class="badge">数字分身·AI</span>' };
 const REAL = { name: '提瓦特老张', av: '<div class="avatar real">张</div>', badge: '<span class="badge real">UP主本人</span>' };
 const ME = { name: '小雷', av: '<div class="avatar me">雷</div>' };
-const state = { signed: false, booked: false, sub: '未订阅', joined: false, intent: '问攻略', mem: [], real: [], cloneChats: 0 };
+const state = { signed: false, booked: false, sub: '未订阅', joined: false, intent: '', mem: [], real: [], cloneChats: 0 };
 function remember(t) { state.mem.push(t); $('#p-mem').innerHTML = state.mem.slice(-3).join('<br>'); }
 
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 2200); }
@@ -62,6 +62,10 @@ const S = {
       clone('打完回来告诉我过没过哈，我记着呢 ✍️');
       remember('10.12 问深渊12层下半配队，在练火系主C');
       step('③粉丝记忆', '分身写入记忆：<b>深渊下半未通关、在练火C</b> → 之后主动跟进');
+      setTimeout(() => { if (chat !== groupChat) return; me('懂了！谢谢老张 🙏'); state.l2 = true;
+        $('#p-level').innerHTML = '核心粉（已确认） <span class="lv2">L2</span>';
+        $('#p-intent').innerHTML = `${state.intent ? state.intent + ' → ' : ''}攻略需求型 <span class="lv2">L2</span>`;
+        step('②分层承接', '<span class="lv2">L2</span> 行为更新：提问被解答并致谢 → 层级确认 <b>核心粉 × 攻略需求型</b>' + (state.intent ? '（与 L1 一致）' : '（由行为推断，无需填写）')); }, 1500);
     });
   },
   followup() {
@@ -200,26 +204,32 @@ say(CLONE, '哇这也太可爱了吧！我先存了，本人上线一定看 ✨'
 $('#opts').onclick = e => { const v = e.target.dataset.v; if (!v) return; state.intent = v; document.querySelectorAll('#opts span').forEach(s => s.classList.toggle('on', s === e.target)); recJoin(); };
 $('#auth').onchange = () => { $('#authinfo').style.display = $('#auth').checked ? '' : 'none'; recJoin(); };
 function recJoin() {
-  const r = $('#jrec'); const low = !$('#auth').checked && state.intent === '随便看看';
-  r.className = 'jrec' + (low ? ' alt' : ''); r.innerHTML = low ? '💡 推荐先加入<b>开放水友群</b>，熟悉后再来核心群（仍可直接申请）' : '✅ 匹配度高：推荐加入<b>核心粉丝群</b>';
+  const r = $('#jrec');
+  r.className = 'jrec' + (state.intent === '随便看看' ? ' alt' : '');
+  r.innerHTML = !state.intent ? '📝 不填也能进群，档案会随互动自动完善' : state.intent === '随便看看' ? '💡 也可以先逛逛<b>开放水友群</b>（仍可直接加入本群）' : `✅ 初判：<b>核心粉候选 × ${state.intent === '找攻略答案' ? '攻略需求型' : state.intent === '找队友' ? '社交型' : '追更型'}</b>`;
 }
 function joinGroup() {
   if (state.joined) return; state.joined = true;
   const auth = $('#auth').checked;
   $('#join').classList.add('gone');
-  $('#p-level').textContent = auth ? '普通粉丝 · 粉丝牌 6 级' : '普通粉丝（未授权）';
-  $('#p-intent').textContent = state.intent + '（入群选择）';
-  $('#p-src').textContent = auth ? '《深渊配队》视频' : '未知（未授权）';
+  const type = { '找攻略答案': '攻略需求型', '找队友': '社交型', '追更UP主': '追更型', '随便看看': '观望型' }[state.intent];
+  state.type = type || '待推断';
+  $('#p-level').innerHTML = `核心粉<b style="color:#ff7d00">候选</b>${auth ? ' · 粉丝牌 6 级' : ''} <span class="lv0">L0</span>`;
+  $('#p-intent').innerHTML = state.intent ? `${state.intent} → ${type} <span class="lv1">L1</span>` : '未填写，待行为推断';
+  $('#p-src').innerHTML = '《深渊满星配队》简介 · 申请核心群 · 口令 ✓ <span class="lv0">L0</span>';
   $('#p-sign').textContent = '连续 6 天';
   remember('10.12 入群');
-  step('①入群识别', `${auth ? '粉丝牌 6 级 · 关注 12 天 · 近期看《深渊配队》' : '未授权，仅按答题建档'} · 来意=<b>${state.intent}</b> → 建立粉丝档案`);
+  step('①入群识别', '<span class="lv0">L0</span> 自动建档：申请群=核心粉丝群 · 来源=《深渊满星配队》简介 · 口令答对');
+  step('①入群识别', state.intent ? `<span class="lv1">L1</span> 可选来意=<b>${state.intent}</b> → 初判 <b>核心粉候选 × ${type}</b>` : '<span class="lv1">L1</span> 粉丝跳过来意题 → 不影响入群，类型待 L2 行为推断');
+  if (auth) step('①入群识别', '增强项：B 站授权 → 粉丝牌 6 级 · 关注 12 天');
   sys('小雷 加入了群聊');
   setTimeout(() => bot('欢迎新人～群规：禁广告、禁引战。签到/抽奖/组队找我，想和老张聊直接 @老张 👇'), 300);
-  const hook = { '问攻略': '有卡关直接问我，我视频里讲过的都能答', '找队友': '想组队喊群助手就行，我也常在群里冒泡', '追更UP主': '开播我私聊叫你，不 @全体吵你', '随便看看': '随便逛，想聊天随时 @我' }[state.intent];
-  setTimeout(() => { clone(`小雷你好呀～我是老张的数字分身 👋 ${auth ? '看你最近在刷我的<b>深渊配队</b>，' : ''}${hook}！`); step('③粉丝记忆', `${R.clone} 第一次打招呼：引用入群来源与来意，建立"老张认识我"的第一印象`); }, 1100);
+  const hook = { '找攻略答案': '有卡关直接问我，我视频里讲过的都能答', '找队友': '想组队喊群助手就行，我也常在群里冒泡', '追更UP主': '开播我私聊叫你，不 @全体吵你', '随便看看': '随便逛，想聊天随时 @我' }[state.intent] || '有啥想聊的随时 @我';
+  setTimeout(() => { clone(`小雷你好呀～我是老张的数字分身 👋 看你是从我<b>深渊配队</b>那期来的，${hook}！`); step('③粉丝记忆', `${R.clone} 第一次打招呼：引用入群来源与来意，建立"老张认识我"的第一印象`); }, 1100);
   markJ(0);
 }
 $('#jbtn').onclick = joinGroup;
+$('#skip').onclick = () => { state.intent = ''; document.querySelectorAll('#opts span').forEach(s => s.classList.remove('on')); joinGroup(); };
 
 /* 演示剧本 */
 const J = [() => joinGroup(), () => S.guide(), () => S.followup(), () => { S.sign(); setTimeout(() => S.team(), 1500); }, () => S.gear(), () => S.care()];
@@ -322,7 +332,7 @@ function renderHome() {
     <div class="hsec gold"><h5>🎙 老张亲自回复你 <small>分身转达后本人回的消息</small></h5>
       ${state.real.length ? state.real.map(r => `<div class="realq">${r}</div>`).join('') : '<p class="privacy">还没有～和分身多聊聊，重要的事它会转给老张本人</p>'}</div>
     <div class="hsec"><h5>🧠 分身记得关于你的事 <small>用于下次接着聊</small></h5>
-      <div class="tags"><span>来意：${state.intent}</span>${auth ? '<span>来自：深渊配队视频</span>' : ''}${state.mem.some(m => m.includes('火系')) ? '<span>在练：火系主C</span>' : ''}${state.mem.some(m => m.includes('通关')) ? '<span>深渊12层 ✓</span>' : ''}</div>
+      <div class="tags"><span>${state.intent ? '来意：' + state.intent : '来意：未填写'}</span><span>类型：${state.l2 ? '攻略需求型 ✓' : (state.type || '待推断')}</span>${auth ? '<span>来自：深渊配队视频</span>' : ''}${state.mem.some(m => m.includes('火系')) ? '<span>在练：火系主C</span>' : ''}${state.mem.some(m => m.includes('通关')) ? '<span>深渊12层 ✓</span>' : ''}</div>
       <div class="tl">${state.mem.map(m => { const [d, ...r] = m.split(' '); return `<div><i>${d}</i>${r.join(' ')}</div>`; }).join('') || '<div>暂无</div>'}</div>
       <button class="hbtn ghost" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';renderHome();toast('已清除');step('③粉丝记忆','粉丝清除记忆 → 分身仅保留层级与来意')">让分身忘掉这些</button>
       <p class="privacy">只记录与互动相关的摘要；老张本人只看到标签和摘要，看不到私聊原文。</p></div>
