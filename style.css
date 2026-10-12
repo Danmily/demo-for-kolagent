@@ -1,4 +1,6 @@
-:root{--bg:#f2f3f7;--card:#fff;--text:#1f2329;--sub:#8a8f99;--line:#e6e8ec;--qq:#0099ff;--qqbg:#eef1f5;--me:#0099ff;--gold:#f5a623;--green:#21b36b;--red:#f54a45}
+/* Aurora Design 4.0 token（与 UTUP aurora-fallback 一致），QQ 端保留品牌蓝 */
+:root{--au-primary:#165dff;--au-primary-light:#e8f3ff;--au-success:#00b42a;--au-success-light:#e8ffea;--au-warning:#ff7d00;--au-warning-light:#fff7e8;--au-danger:#f53f3f;--au-text-1:#1d2129;--au-text-2:#4e5969;--au-text-3:#86909c;--au-border:#e5e6eb;--au-fill-2:#f2f3f5;--au-radius:6px;--au-radius-lg:8px;--au-shadow-1:0 1px 4px rgba(29,33,41,.06);--au-shadow-2:0 4px 16px rgba(29,33,41,.08);
+--bg:var(--au-fill-2);--card:#fff;--text:var(--au-text-1);--sub:var(--au-text-3);--line:var(--au-border);--qq:#0099ff;--qqbg:#eef1f5;--me:#0099ff;--gold:var(--au-warning);--green:var(--au-success);--red:var(--au-danger)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:14px}
 button{font:inherit;cursor:pointer;border:0}
@@ -100,3 +102,29 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none;z-index:9}
 .toast.on{opacity:1}
 @media(max-width:760px){#kol{flex-direction:column}.side{width:auto;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}.side .me{display:none}.side a{flex:none}.board{padding:16px}.phone{height:680px}}
+
+/* ===== KOL 端：Aurora 风格覆盖 ===== */
+.topbar{box-shadow:var(--au-shadow-1)}
+.switch button.on{color:var(--au-primary)}
+#kol{background:var(--au-fill-2)}
+#kol .side{padding:12px 8px}
+#kol .side a{border-radius:var(--au-radius);color:var(--au-text-2);font-size:14px}
+#kol .side a.on{background:var(--au-primary-light);color:var(--au-primary)}
+#kol h2{font-size:20px;font-weight:600;color:var(--au-text-1)}
+#kol h4{font-size:14px;font-weight:600;color:var(--au-text-1);padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--au-border)}
+#kol .panel,#kol .kpi{border-radius:var(--au-radius-lg);border:1px solid var(--au-border);box-shadow:none}
+#kol .kpi b{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+#kol .kpi span{color:var(--au-text-3)}
+#kol .mini{background:var(--au-primary);border-radius:var(--au-radius);height:28px;padding:0 12px}
+#kol .mini.ghost{background:#fff;border:1px solid var(--au-border);color:var(--au-text-1)}
+#kol .tag{border-radius:2px;padding:1px 8px;font-size:12px;background:var(--au-fill-2);color:var(--au-text-2)}
+#kol .tag.blue{background:var(--au-primary-light);color:var(--au-primary)}
+#kol .tag.green{background:var(--au-success-light);color:var(--au-success)}
+#kol .tag.gold{background:var(--au-warning-light);color:var(--au-warning)}
+#kol th{background:var(--au-fill-2);color:var(--au-text-2);font-weight:500}
+#kol td,#kol th{padding:10px 12px;border-bottom:1px solid var(--au-border)}
+#kol .cal div{border-radius:var(--au-radius);background:#fff;border:1px solid var(--au-border)}
+#kol .cal .busy{background:var(--au-primary-light);border-color:#bedaff}
+#kol .cal .open{background:var(--au-success-light);border-color:#aff0b5}
+.explain .card,.step{border:1px solid var(--au-border);border-radius:var(--au-radius-lg)}
+.step{border-left:3px solid var(--au-primary)}.step b{color:var(--au-primary)}

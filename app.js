@@ -172,7 +172,7 @@ $('#cal').innerHTML = Array.from({ length: 30 }, (_, i) => { const d = i + 1, b 
 
 /* ---------- 图表 ---------- */
 const drawn = new Set();
-const C = ['#0099ff', '#ff7a45', '#21b36b', '#f5a623', '#9b59b6', '#8a8f99'];
+const C = ['#165dff', '#ff7d00', '#00b42a', '#14c9c9', '#722ed1', '#86909c'];
 const days = Array.from({ length: 30 }, (_, i) => `9/${13 + i > 30 ? '' : ''}${i + 1}`).map((_, i) => { const d = new Date(2026, 8, 13 + i); return `${d.getMonth() + 1}/${d.getDate()}`; });
 function mk(id, cfg) { if (drawn.has(id) || !document.getElementById(id)?.offsetParent) return; drawn.add(id); new Chart(document.getElementById(id), cfg); }
 const opt = { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } };
