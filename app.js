@@ -433,3 +433,11 @@ refreshSugg('clone'); refreshSugg('bot');
 // 群聊里的剧本/面板操作始终写回群聊
 const _J = $('#journey').onclick; $('#journey').onclick = e => { setMode('group'); chat = groupChat; _J(e); };
 document.querySelectorAll('[data-demo]').forEach(b => b.addEventListener('click', () => { if ($('#dm').classList.contains('on')) setMode('group'); }, true));
+
+/* URL hash 直达：#kol / #kol/brief / #kol/income，供答辩页内嵌 */
+(function () {
+  const h = location.hash.slice(1); if (!h) return;
+  const [v, tab] = h.split('/');
+  if (v === 'kol') { document.querySelector('[data-view=kol]').click(); if (tab) go(tab); }
+  if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
+})();

@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>粉丝群 Agent 答辩</title>
+<style>
+:root{--p:#165dff;--pl:#e8f3ff;--o:#ff7a45;--ol:#fff3eb;--g:#00b42a;--gl:#e8ffea;--w:#ff7d00;--wl:#fff7e8;--r:#f53f3f;--rl:#ffece8;--gold:#c27c00;--goldl:#fff8e1;--t1:#1d2129;--t2:#4e5969;--t3:#86909c;--line:#e5e6eb;--bg:#f7f8fa;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--t1);background:var(--bg);font-size:16px;line-height:1.6}
+section{min-height:100vh;scroll-snap-align:start;padding:64px max(16px,6vw) 56px;display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative}
+section:nth-child(even){background:#fff}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--p);font-weight:600}
+h1{font-size:clamp(30px,4.6vw,56px);line-height:1.2}
+h2{font-size:clamp(24px,3vw,38px);line-height:1.3}
+h3{font-size:18px}
+.lead{font-size:clamp(16px,1.6vw,20px);color:var(--t2);max-width:900px}
+.big{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.3}
+.hl{color:var(--p)}.ho{color:var(--o)}.hr{color:var(--r)}.hg{color:var(--g)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+section:nth-child(even) .card{background:var(--bg)}
+.card h3{margin-bottom:6px}.card p,.card li{color:var(--t2);font-size:14px}
+.card ul{padding-left:18px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:4px;background:var(--pl);color:var(--p);font-weight:600;margin-bottom:6px}
+.tag.o{background:var(--ol);color:var(--o)}.tag.g{background:var(--gl);color:var(--g)}.tag.r{background:var(--rl);color:var(--r)}.tag.w{background:var(--wl);color:var(--w)}.tag.gold{background:var(--goldl);color:var(--gold)}.tag.gray{background:#f2f3f5;color:var(--t2)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:10px;overflow:hidden}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f2f3f5;color:var(--t2);font-weight:600}
+.num{position:absolute;top:22px;right:max(16px,6vw);font-size:13px;color:var(--t3)}
+.note{font-size:13px;color:var(--t3)}
+/* funnel */
+.funnel{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.fstep{flex:1 1 140px;border-radius:10px;padding:14px;background:var(--pl);position:relative;min-width:140px}
+.fstep b{display:block;font-size:15px}.fstep small{color:var(--t2);font-size:13px;display:block}
+.fstep.cut{background:var(--rl)}.fstep.cut b{color:var(--r)}
+.fstep .k{font-size:12px;color:var(--p);font-weight:700}.fstep.cut .k{color:var(--r)}
+.breakline{display:flex;align-items:center;gap:10px;color:var(--r);font-weight:700}
+.breakline:before,.breakline:after{content:"";flex:1;border-top:2px dashed var(--r)}
+/* roles */
+.role{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--line)}
+.role .av{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:22px}
+.role.clone{background:linear-gradient(160deg,#fff3eb,#fff)}.role.clone .av{background:linear-gradient(135deg,#ff7a45,#ffb347)}
+.role.bot{background:linear-gradient(160deg,#f2f3f5,#fff)}.role.bot .av{background:#c9cdd4;color:#4e5969}
+.role.real{background:linear-gradient(160deg,#fff8e1,#fff)}.role.real .av{background:linear-gradient(135deg,#c27c00,#ffb800)}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:600}
+.flow span{background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 14px}.flow i{font-style:normal;color:var(--t3)}
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pipe .card{text-align:center;padding:14px 10px}.pipe .card b{display:block;font-size:22px;color:var(--p)}
+.base{background:linear-gradient(90deg,var(--p),#4080ff);color:#fff;border-radius:10px;text-align:center;padding:12px;font-weight:600}
+/* levels */
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.lv .card{border-top:4px solid var(--t3)}.lv .card:nth-child(2){border-top-color:var(--p)}.lv .card:nth-child(3){border-top-color:var(--g)}
+/* journey */
+.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;position:relative}
+.journey .card{padding:14px 12px}.journey .card .d{font-size:12px;color:var(--t3)}
+.journey .card.star{border:2px solid var(--gold);background:var(--goldl)!important}
+/* demo frames */
+.demo{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr);gap:20px;align-items:start}
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 8px 32px rgba(29,33,41,.12)}
+.frame .bar{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--t3)}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:#e5e6eb}.frame .bar a{margin-left:auto;color:var(--p);text-decoration:none}
+.frame iframe{width:100%;height:min(72vh,720px);border:0;display:block}
+.say{border-left:4px solid var(--o);background:var(--ol);padding:14px 16px;border-radius:0 10px 10px 0;font-size:15px;color:var(--t1)}
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:10px}
+.steps div{counter-increment:s;display:flex;gap:10px;font-size:14px;color:var(--t2)}
+.steps div:before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--p);color:#fff;font-size:12px;display:grid;place-items:center;font-weight:700}
+/* metrics */
+.north{background:linear-gradient(135deg,var(--p),#4080ff);color:#fff;border-radius:14px;padding:22px}.north small{opacity:.85}
+.road{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.road .card{border-radius:0;border-right:0}.road .card:first-child{border-radius:12px 0 0 12px}.road .card:last-child{border-radius:0 12px 12px 0;border-right:1px solid var(--line)}
+.road .card.now{background:var(--pl)!important;border-color:var(--p)}
+.cta{display:inline-flex;gap:8px;align-items:center;background:var(--p);color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:600;width:max-content}
+.cta.ghost{background:#fff;color:var(--p);border:1px solid var(--p)}
+/* nav */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--p);z-index:9;transition:width .2s}
+.nav{position:fixed;right:16px;bottom:16px;display:flex;gap:6px;z-index:9}
+.nav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.toc{position:fixed;left:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:9}
+.toc a{width:8px;height:8px;border-radius:50%;background:#c9cdd4;display:block}.toc a.on{background:var(--p);height:20px;border-radius:4px}
+@media(max-width:900px){.pipe,.journey,.road,.lv{grid-template-columns:1fr 1fr}.demo{grid-template-columns:1fr}.toc{display:none}.frame iframe{height:600px}}
+@media(max-width:520px){.pipe,.journey,.road,.lv{grid-template-columns:1fr}}
+@media print{html{scroll-snap-type:none}section{page-break-after:always;min-height:auto}.nav,.toc,.progress{display:none}.frame iframe{display:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="toc" id="toc"></nav>
+<div class="nav"><button onclick="move(-1)" title="上一页 ↑">↑</button><button onclick="move(1)" title="下一页 ↓">↓</button><button onclick="fs()" title="全屏 F">⛶</button></div>
+
+<!-- 1 封面 -->
+<section>
+  <div class="kicker">课题答辩 · 2026.10</div>
+  <h1>面向 QQ 游戏 KOL 粉丝群的<br><span class="hl">智能运营 Agent</span></h1>
+  <p class="lead">以 B 站《原神》攻略型 UP 主「提瓦特老张」为例</p>
+  <div class="flow"><span>筛选匹配</span><i>→</i><span>分层承接</span><i>→</i><span>关系沉淀</span><i>→</i><span>价值回流</span></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="cta" href="index.html" target="_blank">打开可交互 Demo ↗</a><span class="note" style="align-self:center">← → / 空格翻页 · F 全屏</span></div>
+</section>
+
+<!-- 2 一句话 -->
+<section>
+  <div class="kicker">先说结论</div>
+  <p class="big">这不是一个回答游戏问题的机器人，<br>而是帮 UP 主<span class="ho">维系粉丝关系</span>的 Agent。</p>
+  <div class="grid g2">
+    <div class="card"><span class="tag gray">我们观察到</span><h3>粉丝是经过层层筛选、带着期待进群的</h3><p>刷到视频 → 关注 → 粉丝牌 → 入群口令，每一步都在筛选"对的人"。</p></div>
+    <div class="card"><span class="tag r">但是</span><h3>进群那一刻，没有人记得他是谁</h3><p>入群审核只回答"放不放行"，不回答"他是谁、为什么来"。</p></div>
+  </div>
+  <p class="big" style="text-align:center">筛选做了，<span class="hr">信息丢了。</span></p>
+</section>
+
+<!-- 3 选题 -->
+<section>
+  <div class="kicker">01 · 选题定义</div>
+  <h2>为什么是原神 + 攻略型 UP 主</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag">KOL</span><h3>提瓦特老张（虚构）</h3><p>B 站原神攻略 UP 主 · 约 50 万粉 · 管理 <b>23 个 QQ 群</b></p></div>
+    <div class="card"><span class="tag">粉丝群</span><h3>核心群 / 水友群 / 舰长群</h3><p>对应<b>强匹配 / 弱匹配 / 付费匹配</b>，可以验证不同承接策略</p></div>
+    <div class="card"><span class="tag gray">载体</span><h3>原神只是载体</h3><p>匹配、分层、记忆能力可复制到其他游戏和其他类型 KOL</p></div>
+  </div>
+  <p class="lead">选攻略型，是因为粉丝入群动机最清晰：<b>求答案、找同好、追更</b>。动机清晰 → 分层清晰 → Agent 价值最容易验证。</p>
+</section>
+
+<!-- 4 匹配链路 -->
+<section>
+  <div class="kicker">02 · 现状：匹配链路</div>
+  <h2>粉丝和 UP 主不是随机相遇的</h2>
+  <div class="funnel">
+    <div class="fstep"><span class="k">① 内容触达</span><b>刷到攻略视频</b><small>推荐算法筛选</small></div>
+    <div class="fstep"><span class="k">② 关注</span><b>主动关注</b><small>粉丝自主选择</small></div>
+    <div class="fstep"><span class="k">③ 加深</span><b>粉丝牌 / 上舰</b><small>等级与付费身份</small></div>
+    <div class="fstep"><span class="k">④ 入群</span><b>口令 / 截图</b><small>只判断放不放行</small></div>
+    <div class="fstep cut"><span class="k">⑤ 群内</span><b>无差别承接</b><small>铁粉新人一个待遇</small></div>
+    <div class="fstep cut"><span class="k">⑥ 留存转化</span><b>无从判断</b><small>只看得到群人数</small></div>
+  </div>
+  <div class="breakline">④ 和 ⑤ 之间：B 站上的粉丝牌、看过的视频，进了 QQ 群全部清零</div>
+  <p class="lead">前半段<b class="hl">持续筛选</b>，后半段<b class="hr">没有承接</b>。</p>
+</section>
+
+<!-- 5 粉丝 -->
+<section>
+  <div class="kicker">03 · 粉丝侧痛点</div>
+  <h2>五类粉丝，期待完全不同，体验却一样</h2>
+  <div class="grid g5">
+    <div class="card"><span class="tag gold">舰长 / 铁粉</span><h3>想被老张认识</h3><p>现状：和新人待遇相同，话被刷屏淹没</p></div>
+    <div class="card"><span class="tag">核心粉</span><h3>想第一时间知道动态</h3><p>现状：通知散落，活动错过</p></div>
+    <div class="card"><span class="tag o">攻略需求型</span><h3>想快速拿到答案</h3><p>现状：问三遍没人回，被嫌"伸手党"</p></div>
+    <div class="card"><span class="tag g">社交型</span><h3>想找队友、找同好</h3><p>现状：小圈子化，新人插不进去</p></div>
+    <div class="card"><span class="tag gray">潜水型</span><h3>先看看</h3><p>现状：从未被触达，悄悄退群</p></div>
+  </div>
+  <p class="big" style="text-align:center">粉丝最核心的诉求只有三个字：<span class="ho">被看见</span></p>
+</section>
+
+<!-- 6 KOL -->
+<section>
+  <div class="kicker">04 · KOL 侧痛点</div>
+  <h2>老张一个人，管不过来 23 个群</h2>
+  <div class="grid g4">
+    <div class="card"><p>入群审核</p><p class="big">30–60<small style="font-size:16px"> 分钟/天</small></p><p>只能决定放行，信息不沉淀</p></div>
+    <div class="card"><p>认识粉丝</p><p class="big">&lt; 20<small style="font-size:16px"> / 500 人</small></p><p>只记得几个常冒泡的 ID</p></div>
+    <div class="card"><p>群活动</p><p class="big">1–2<small style="font-size:16px"> 天/次</small></p><p>策划成本高，效果难统计</p></div>
+    <div class="card"><p>判断群好不好</p><p class="big">只看人数</p><p>不知道谁在流失、谁有需求</p></div>
+  </div>
+  <table><tr><th>环节</th><th>现在怎么做</th><th>问题</th></tr>
+    <tr><td>日常答疑</td><td>偶尔上线挑几条回</td><td>重复问题多；回了 A 没回 B 引起不满</td></tr>
+    <tr><td>开播通知</td><td>多群发公告、@全体</td><td>打扰潜水粉，被屏蔽</td></tr>
+    <tr><td>商单承接</td><td>群公告硬发链接</td><td>被吐槽恰饭；不知道谁真正感兴趣</td></tr></table>
+</section>
+
+<!-- 7 断点 -->
+<section>
+  <div class="kicker">05 · 问题定义</div>
+  <h2>五个断点，指向一个矛盾</h2>
+  <table>
+    <tr><th>#</th><th>断点</th><th>粉丝感受</th><th>KOL 感受</th></tr>
+    <tr><td>1</td><td><b>筛选信息断档</b></td><td>身份和来意没人记得</td><td>不知道进来的是谁</td></tr>
+    <tr><td>2</td><td><b>承接无差别</b></td><td>铁粉新人一个待遇</td><td>无法按层级分配精力</td></tr>
+    <tr><td>3</td><td><b>关系无记忆</b></td><td>每次都从零开始</td><td>记不住粉丝</td></tr>
+    <tr><td>4</td><td><b>活跃靠人力</b></td><td>群沉寂或被刷屏</td><td>活动、风控全靠自己</td></tr>
+    <tr><td>5</td><td><b>价值不回流</b></td><td>被硬广打扰</td><td>不知道谁在流失、谁值得转化</td></tr>
+  </table>
+  <div class="say">粉丝<b>带着期待</b>进群，群内承接却<b>无差别、无记忆、无反馈</b>。</div>
+</section>
+
+<!-- 8 三角色 -->
+<section>
+  <div class="kicker">06 · 方案核心决定</div>
+  <h2>把 Agent 拆成三个角色</h2>
+  <div class="grid g3">
+    <div class="role clone"><div class="av">张</div><span class="tag o">老张数字分身 · AI</span><h3>负责「关系」</h3><p>用老张口吻说话、引用老张视频回答、记得每个粉丝、主动跟进、把重要的事转给本人</p></div>
+    <div class="role bot"><div class="av">🤖</div><span class="tag gray">群助手 · 机器人</span><h3>负责「工具」</h3><p>签到、抽奖、组队、风控、活动查询。不需要人格，不消耗老张人设</p></div>
+    <div class="role real"><div class="av">张</div><span class="tag gold">老张本人</span><h3>负责「关键时刻」</h3><p>分身识别出高情感、高价值消息后升级，本人在后台一键亲自回复</p></div>
+  </div>
+  <div class="say">为什么要拆？最初做的统一"群助手"越做越像客服——<b>省了老张的时间，却没拉近粉丝和老张的距离</b>。拆开后：工具归机器人，聊天归分身，最打动人的那一下留给本人。</div>
+</section>
+
+<!-- 9 五能力 -->
+<section>
+  <div class="kicker">07 · 五类能力</div>
+  <h2>五个断点 → 五类能力，共用一个底座</h2>
+  <div class="pipe">
+    <div class="card"><b>①</b><h3>入群识别</h3><p>建立档案初版</p></div>
+    <div class="card"><b>②</b><h3>分层承接</h3><p>层级 × 意图路由</p></div>
+    <div class="card"><b>③</b><h3>记忆个性化</h3><p>互动摘要接续</p></div>
+    <div class="card"><b>④</b><h3>活跃秩序</h3><p>签到组队风控</p></div>
+    <div class="card"><b>⑤</b><h3>洞察商业化</h3><p>简报、预警、商单</p></div>
+  </div>
+  <div class="base">粉丝档案：入群时创建 → 聊天中更新 → 给 UP 主做决策 → 结果回写</div>
+  <p class="lead">前一项能力的产物，是后一项能力的输入。</p>
+</section>
+
+<!-- 10 L0 L1 L2 -->
+<section>
+  <div class="kicker">① 入群识别</div>
+  <h2>不增加门槛：档案分三层建立</h2>
+  <div class="lv">
+    <div class="card"><span class="tag gray">L0 · 自动</span><h3>粉丝什么都不用做</h3><p>申请的群、群号来源（哪期视频简介）、口令是否答对</p></div>
+    <div class="card"><span class="tag">L1 · 可跳过</span><h3>一道来意题</h3><p>"你进群最想做什么？" 选了"找攻略答案" → 初判 <b>核心粉候选 × 攻略需求型</b></p></div>
+    <div class="card"><span class="tag g">L2 · 行为确认</span><h3>在互动中逐步确认</h3><p>提问被解答并致谢 → 确认 <b>核心粉 × 攻略需求型</b>。跳过 L1 也能推断</p></div>
+  </div>
+  <p class="lead">B 站授权是<b>可选增强项、默认关闭</b>。分流而非拒绝：只推荐更合适的群，不额外提高门槛。</p>
+</section>
+
+<!-- 11 承接矩阵 -->
+<section>
+  <div class="kicker">② 分层承接</div>
+  <h2>同一句话，不同粉丝由不同角色回应</h2>
+  <table>
+    <tr><th>消息意图</th><th>普通 / 需求型</th><th>核心粉</th><th>舰长 / 铁粉</th></tr>
+    <tr><td>问开播 / 更新</td><td>分身答</td><td>分身答 + 预约</td><td>分身答 + 专属预告</td></tr>
+    <tr><td>问攻略</td><td>分身引用老张视频答</td><td>同左</td><td>同左，可优先进本人答疑</td></tr>
+    <tr><td>表达 / 提建议</td><td>分身接话，按热度汇总</td><td>汇总给老张</td><td><b class="ho">升级本人高优队列</b></td></tr>
+    <tr><td>签到 / 组队 / 活动</td><td colspan="3">群助手处理</td></tr>
+    <tr><td>商务合作</td><td colspan="3">转商务队列</td></tr>
+  </table>
+  <p class="note">规则由 UP 主在「配置中心」点击切换，实时生效。分身无把握时不编造，转本人。</p>
+</section>
+
+<!-- 12 旅程 -->
+<section>
+  <div class="kicker">08 · 一位粉丝的完整旅程</div>
+  <h2>小雷的 30 天</h2>
+  <div class="journey">
+    <div class="card"><span class="d">Day 0 · 入群</span><h3>被认出来</h3><p>"看你是从我深渊配队那期来的"</p></div>
+    <div class="card"><span class="d">Day 0 · 首次提问</span><h3>老张的答案</h3><p>引用视频 06:12；致谢后 L2 确认层级</p></div>
+    <div class="card star"><span class="d">Day 3 ⭐</span><h3>老张本人出现</h3><p>分身主动跟进 → 通关 → 升级本人亲回</p></div>
+    <div class="card"><span class="d">Week 2</span><h3>签到 · 组队</h3><p>群助手处理；抽中签名卡分身补一句</p></div>
+    <div class="card"><span class="d">Month 1</span><h3>被问到才推荐</h3><p>先给免费解法，再提"合作"款</p></div>
+    <div class="card"><span class="d">沉默 10 天</span><h3>轻量关怀</h3><p>不带商业内容；老张后台出现预警</p></div>
+  </div>
+</section>
+
+<!-- 13 Demo 粉丝端 -->
+<section>
+  <div class="kicker">DEMO · 粉丝端</div>
+  <h2>现场演示：点右侧「演示剧本」走一遍</h2>
+  <div class="demo">
+    <div class="frame"><div class="bar"><i></i><i></i><i></i>粉丝端 · QQ 群聊<a href="index.html" target="_blank">新窗口打开 ↗</a></div><iframe src="index.html?embed" loading="lazy" title="粉丝端 Demo"></iframe></div>
+    <div class="steps">
+      <div><span><b>入群页</b>：指出 L0 自动记录、L1 可跳过、B 站授权默认关</span></div>
+      <div><span><b>① 入群</b>：分身第一句就是"从我深渊配队那期来的"</span></div>
+      <div><span><b>② 首次提问</b>：第一人称引用视频；"谢谢"后右侧变 L2</span></div>
+      <div><span><b>③ 三天后</b>：<b class="ho">放慢，停 3 秒</b>，等金色的老张本人出现</span></div>
+      <div><span><b>⑤ 一个月后</b>：先给免费解法，再标"合作"，频控 1/1</span></div>
+      <div><span>切到 <b>Chatbot 视图</b>：分身和群助手两个独立窗口</span></div>
+      <div><span>点 <b>💞 我和老张</b>：亲密度、本人回复、记忆可删</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 Demo KOL -->
+<section>
+  <div class="kicker">DEMO · KOL 端</div>
+  <h2>23 个群，一屏看懂今天该做什么</h2>
+  <div class="demo">
+    <div class="frame"><div class="bar"><i></i><i></i><i></i>KOL 端 · 今日群聊简报<a href="index.html#kol/brief" target="_blank">新窗口打开 ↗</a></div><iframe src="index.html?embed#kol/brief" loading="lazy" title="KOL 端 Demo"></iframe></div>
+    <div class="grid">
+      <div class="card"><span class="tag">一句话总结</span><p>分身读完 23 个群、12,860 条消息：19 正常 · 3 需关注 · 1 异常</p></div>
+      <div class="card"><span class="tag r">今天关注的 4 件事</span><p>按 P0–P2 排序，每件带一键动作：定调话术、去回复、排期抽奖、8 群同步回复</p></div>
+      <div class="card"><span class="tag g">真正需要本人处理</span><p class="big" style="font-size:32px">6 / 12,860</p></div>
+      <div class="card"><span class="tag w">收入总览</span><p>商单 + 订阅 + 周边 + 打赏看总收入；单列"群引导转化收入"；提示商单依赖度 61%</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 商业化 -->
+<section>
+  <div class="kicker">⑤ 商业化</div>
+  <h2>有用的才推 · 被问到才推 · 限频推</h2>
+  <div class="grid g4">
+    <div class="card"><span class="tag">场景化商单</span><p>粉丝主动问手机 / 外设时出现，标注"合作"，可点踩</p></div>
+    <div class="card"><span class="tag o">订阅会员</span><p>¥12 分身配队诊断；¥68 每月本人亲回 + 直播连麦。<b>卖的是"离老张更近"</b></p></div>
+    <div class="card"><span class="tag g">周边与二创</span><p>积分兑换周边；优秀二创共创分成</p></div>
+    <div class="card"><span class="tag gold">游戏方合作</span><p>版本前瞻、礼包码、新角色活动，本身就是福利</p></div>
+  </div>
+  <div class="card" style="border-color:var(--r)"><span class="tag r">护栏</span><p>每人每周主动商业推送 ≤ 1 条；点踩率 &gt; 10% 或推送后 24h 退群率异常 → <b>自动暂停该商单</b></p></div>
+</section>
+
+<!-- 16 指标 -->
+<section>
+  <div class="kicker">09 · 指标体系</div>
+  <div class="north"><small>北极星指标</small><h2>周有效互动粉丝占比</h2><small>一周内与分身、老张或群友有过有效互动的去重粉丝 ÷ 群总人数。不看群人数，看关系是否真的在发生。</small></div>
+  <div class="grid g3">
+    <div class="card"><span class="tag gray">匹配</span><p>来意填写率 · 群推荐接受率 · 新粉 7 日留存</p></div>
+    <div class="card"><span class="tag">承接</span><p>自动解答率 · 满意度 · 本人待办下降 · 高优 24h 回复率</p></div>
+    <div class="card"><span class="tag o">关系</span><p>个性化回复覆盖率 · 二次回访率</p></div>
+    <div class="card"><span class="tag g">活跃 / 留存</span><p>群日活 · 组队成功 · 核心粉 / 舰长 30 日留存</p></div>
+    <div class="card"><span class="tag gold">商业</span><p>商单转化 · 会员转化 · 总收入结构</p></div>
+    <div class="card" style="border-color:var(--r)"><span class="tag r">护栏</span><p>点踩率 · 推送后退群率 · 错误回答率</p></div>
+  </div>
+</section>
+
+<!-- 17 分期 -->
+<section>
+  <div class="kicker">10 · 分期交付</div>
+  <h2>先证明省力，再证明被记住，最后再变现</h2>
+  <div class="road">
+    <div class="card now"><span class="tag">MVP</span><h3>分层承接能减负吗</h3><p>入群识别、开播与内容问答、高优升级队列、基础看板</p><p class="note">自动解答率 ≥ 60% · 待办下降 ≥ 70%</p></div>
+    <div class="card"><span class="tag o">V1</span><h3>被记住能留存吗</h3><p>粉丝档案、分身记忆、签到等级、组队撮合</p><p class="note">新粉 7 日留存 +10%</p></div>
+    <div class="card"><span class="tag g">V2</span><h3>低打扰商业化</h3><p>商单管理、兴趣定向、流失预警、订阅</p><p class="note">转化可衡量 · 退群率不升</p></div>
+    <div class="card"><span class="tag gray">V3</span><h3>平台化复制</h3><p>配置模板化，覆盖其他游戏与 UP 主类型</p><p class="note">一个 UP 主一天内上线</p></div>
+  </div>
+  <p class="note">验收数字为假设目标，需灰度验证。</p>
+</section>
+
+<!-- 18 风险 -->
+<section>
+  <div class="kicker">11 · 风险边界</div>
+  <h2>我们最担心的，和对应的设计</h2>
+  <table>
+    <tr><th>风险</th><th>应对</th></tr>
+    <tr><td>分身答错，伤老张口碑</td><td>优先引用老张原内容；低置信不编造，转本人</td></tr>
+    <tr><td>粉丝觉得被 AI 糊弄 / 冒充本人</td><td>每条带"数字分身·AI"；需本人授权；承诺性表态一律升级本人</td></tr>
+    <tr><td>隐私顾虑</td><td>B 站授权默认关；只记必要摘要；「我和老张」可查可删；老张看不到私聊原文</td></tr>
+    <tr><td>商业化伤体验</td><td>被问到才推 · 每周 ≤ 1 条 · 点踩/退群异常自动暂停</td></tr>
+    <tr><td>跨平台打通难</td><td>MVP 只用 L0 + L1 + 群内行为建档，不依赖 B 站</td></tr>
+  </table>
+</section>
+
+<!-- 19 收尾 -->
+<section style="text-align:center;align-items:center">
+  <div class="kicker">回到开头</div>
+  <p class="big">筛选做了，信息丢了。<br>这个 Agent 把它<span class="hl">接住</span>。</p>
+  <div class="grid g3" style="max-width:900px;width:100%;text-align:left">
+    <div class="card"><span class="tag o">粉丝</span><h3>被记住</h3></div>
+    <div class="card"><span class="tag">老张</span><h3>看得清、管得过来</h3></div>
+    <div class="card"><span class="tag g">QQ 平台</span><h3>创作者私域留在 QQ</h3></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="cta" href="index.html" target="_blank">打开 Demo ↗</a><a class="cta ghost" href="https://github.com/Danmily/demo-for-kolagent" target="_blank">GitHub 仓库</a></div>
+  <p class="lead">谢谢各位老师</p>
+</section>
+
+<script>
+const S = [...document.querySelectorAll('section')];
+S.forEach((s, i) => s.insertAdjacentHTML('beforeend', `<span class="num">${i + 1} / ${S.length}</span>`));
+document.getElementById('toc').innerHTML = S.map((_, i) => `<a href="#" data-i="${i}"></a>`).join('');
+document.getElementById('toc').onclick = e => { const a = e.target.closest('a'); if (a) { e.preventDefault(); S[+a.dataset.i].scrollIntoView(); } };
+let cur = 0;
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { cur = S.indexOf(e.target); document.querySelectorAll('.toc a').forEach((a, i) => a.classList.toggle('on', i === cur)); document.getElementById('progress').style.width = ((cur + 1) / S.length * 100) + '%'; } }), { threshold: .55 });
+S.forEach(s => io.observe(s));
+function move(d) { S[Math.max(0, Math.min(S.length - 1, cur + d))].scrollIntoView(); }
+function fs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); }
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea')) return;
+  if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); move(1); }
+  if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); move(-1); }
+  if (e.key === 'f' || e.key === 'F') fs();
+});
+</script>
+</body>
+</html>

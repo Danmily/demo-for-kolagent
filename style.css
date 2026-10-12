@@ -248,3 +248,4 @@ b.ok,.ok{color:var(--au-success)}b.warn,.warn{color:var(--au-warning)}b.bad,.bad
 .jsec.l0{background:#f7f8fa;border:1px dashed var(--line)}.jsec.l0 .kv{font-size:12px;padding:3px 0}
 .skip{font-size:12px;color:var(--sub);text-align:right;cursor:pointer}
 details.jsec summary{cursor:pointer;list-style:none;font-size:13px}details.jsec summary i{font-style:normal;color:var(--sub);font-size:12px}
+body.embed .topbar{display:none}body.embed #kol{min-height:100vh}
