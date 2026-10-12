@@ -22,19 +22,24 @@
     <div class="phone">
       <div class="qq-head">
         <span class="back">‹</span>
-        <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张的群助手（AI）在线</small></div>
-        <span class="more home-btn" onclick="openHome()" title="我的粉丝主页">👤</span>
+        <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张分身 · 群助手</small></div>
+        <span class="more home-btn" onclick="openHome()" title="我和老张">💞</span>
       </div>
-      <div class="abar"><div class="avatar ai sm">张</div><div><b>老张的群助手</b><small>问攻略 · 查开播 · 组队，直接 @我</small></div><button onclick="openHome()">我的主页 ›</button></div>
+      <div class="abar"><div class="avatar ai sm">张</div><div><b>老张 · 数字分身在线</b><small>他记得你 · 重要的事会转给本人</small></div><button onclick="openHome()">💞 我和老张</button></div>
       <div class="pinned" id="pinned">📌 群公告：今晚 20:00 直播「新版本深渊满星配队」，点我预约 ›</div>
       <div class="chat" id="chat"></div>
-      <div class="chips" id="chips"></div>
+      <div class="panel-f" id="panel">
+        <div data-k="sign">✅<br>签到</div><div data-k="draw">🎁<br>抽奖</div><div data-k="team">🤝<br>组队</div><div data-k="live">🔴<br>预约直播</div>
+        <div data-k="game">📢<br>版本活动</div><div data-k="sub">⭐<br>会员</div><div data-k="profile">💞<br>我和老张</div><div data-k="video">▶️<br>最新视频</div>
+      </div>
       <div class="qq-input">
-        <input id="msg" placeholder="@群助手 说点什么…">
+        <button class="at on" data-t="老张" title="和老张分身聊">张</button><button class="at bot" data-t="群助手" title="找群助手">🤖</button>
+        <input id="msg" placeholder="和老张分身聊聊…">
+        <button class="plus" id="plus">⊕</button>
         <button id="send">发送</button>
       </div>
       <div class="home" id="home">
-        <div class="hhead"><span onclick="closeHome()">‹ 返回群聊</span><b>我的粉丝主页</b><span></span></div>
+        <div class="hhead"><span onclick="closeHome()">‹ 返回群聊</span><b>我和老张</b><span></span></div>
         <div class="hbody" id="hbody"></div>
       </div>
       <div class="join" id="join">
@@ -59,6 +64,8 @@
     <div class="journey" id="journey">
       <button data-j="0"><i>①</i>入群</button><button data-j="1"><i>②</i>首次提问</button><button data-j="2"><i>③</i>三天后</button><button data-j="3"><i>④</i>第二周</button><button data-j="4"><i>⑤</i>一个月后</button><button data-j="5"><i>⑤</i>开始沉默</button>
     </div>
+    <div class="roles"><div><span class="avatar ai sm">张</span><b>老张分身</b><small>关系：口吻、记忆、主动关心、转达本人</small></div><div><span class="avatar bot sm">🤖</span><b>群助手</b><small>工具：签到、抽奖、组队、风控</small></div><div><span class="avatar real sm">张</span><b>老张本人</b><small>关键时刻：分身升级后亲自回复</small></div></div>
+    <div class="demo-more"><span>更多场景：</span><button data-demo="memory">还记得我吗</button><button data-demo="say">催更剧情</button><button data-demo="emo">又歪了</button><button data-demo="captain">舰长建议</button><button data-demo="ad">有人发广告</button><button data-demo="draw">抽签名卡</button></div>
     <h3>Agent 在后台做了什么</h3>
     <p class="hint">左侧每次交互，这里实时展示 Agent 的识别与路由，对应 PRD 五类能力。</p>
     <div class="card profile">
@@ -241,8 +248,8 @@
           <tr><td>水友群</td><td>开放</td><td><span class="tag">弱匹配</span></td></tr>
           <tr><td>舰长群</td><td>舰长身份 / 冒险家会员</td><td><span class="tag gold">付费匹配</span></td></tr></table>
         </div>
-        <div class="panel"><h4>人设与内容库</h4>
-          <div class="kv"><span>身份</span><b>老张的群助手（AI），不冒充本人</b></div>
+        <div class="panel"><h4>老张数字分身 · 人设与内容库</h4>
+          <div class="kv"><span>角色分工</span><b>老张分身（关系）· 群助手（工具）· 本人（升级）</b></div><div class="kv"><span>分身标识</span><b>所有分身消息带「数字分身·AI」</b></div>
           <div class="kv"><span>语气</span><b>热情、爱玩梗、称呼粉丝"旅行者"</b></div>
           <div class="kv"><span>知识优先级</span><b>① 老张视频/动态 ② 通用游戏知识库</b></div>
           <div class="kv"><span>内容库</span><b>128 期视频文稿 · 42 条动态 · 更新于 10.12</b></div>

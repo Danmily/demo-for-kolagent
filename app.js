@@ -1,8 +1,11 @@
 const $ = s => document.querySelector(s);
 const chat = $('#chat'), log = $('#log');
-const AI = { name: '老张的群助手', av: '<div class="avatar ai">张</div>' };
+/* 三个角色：群助手（工具）· 老张数字分身（关系）· 老张本人（关键时刻） */
+const BOT = { name: '群助手', av: '<div class="avatar bot">🤖</div>', badge: '<span class="badge bot">机器人</span>' };
+const CLONE = { name: '老张', av: '<div class="avatar ai">张</div>', badge: '<span class="badge">数字分身·AI</span>' };
+const REAL = { name: '提瓦特老张', av: '<div class="avatar real">张</div>', badge: '<span class="badge real">UP主本人</span>' };
 const ME = { name: '小雷', av: '<div class="avatar me">雷</div>' };
-const state = { signed: false, booked: false, sub: '未订阅', drawn: false, joined: false, intent: '问攻略', mem: [] };
+const state = { signed: false, booked: false, sub: '未订阅', joined: false, intent: '问攻略', mem: [], real: [], cloneChats: 0 };
 function remember(t) { state.mem.push(t); $('#p-mem').innerHTML = state.mem.slice(-3).join('<br>'); }
 
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 2200); }
@@ -16,193 +19,187 @@ function me(text) {
   if (override) { text = override; override = null; }
   chat.insertAdjacentHTML('beforeend', `<div class="row me">${ME.av}<div class="body"><div class="name">${ME.name}<span class="lv">粉丝牌6</span></div><div class="bubble">${text}</div></div></div>`); scroll();
 }
-function ai(html, raw = false) {
-  const inner = raw ? html : `<div class="bubble">${html}</div>`;
-  chat.insertAdjacentHTML('beforeend', `<div class="row">${AI.av}<div class="body"><div class="name">${AI.name}<span class="badge">AI助手</span></div>${inner}</div></div>`); scroll();
+function say(who, html, raw = false) {
+  const inner = raw ? html : `<div class="bubble ${who === REAL ? 'realb' : ''}">${html}</div>`;
+  chat.insertAdjacentHTML('beforeend', `<div class="row">${who.av}<div class="body"><div class="name">${who.name}${who.badge}</div>${inner}</div></div>`); scroll();
 }
+const bot = (h, r) => say(BOT, h, r);
+const clone = (h, r) => { state.cloneChats++; say(CLONE, h, r); };
+const real = h => { say(REAL, h); state.real.push(h); };
 function step(cap, text) { log.insertAdjacentHTML('afterbegin', `<div class="step"><span class="cap">${cap}</span>${text}</div>`); }
-function reply(fn, delay = 650) {
-  chat.insertAdjacentHTML('beforeend', `<div class="row" id="typing">${AI.av}<div class="body"><div class="bubble typing">正在输入…</div></div></div>`); scroll();
+function reply(fn, delay = 650, who = CLONE) {
+  chat.insertAdjacentHTML('beforeend', `<div class="row" id="typing">${who.av}<div class="body"><div class="bubble typing">${who === CLONE ? '老张分身正在输入…' : '正在输入…'}</div></div></div>`); scroll();
   setTimeout(() => { $('#typing')?.remove(); fn(); }, delay);
 }
+const R = { clone: '<b style="color:#ff7a45">老张分身</b>', bot: '<b style="color:#4e5969">群助手</b>', real: '<b style="color:#c27c00">老张本人</b>' };
 
 /* ---------- 场景 ---------- */
 const S = {
   live() {
-    me('@老张AI分身 今晚播吗？');
-    step('②分层承接', '意图=<b>问UP主动态</b>，粉丝层级=普通 → 分身直接回答，不打扰本人');
+    me('@老张 今晚播吗？');
+    step('②分层承接', `问UP主动态 → ${R.clone} 用老张口吻回答 + 关联记忆；预约由 ${R.bot} 发卡片`);
     reply(() => {
-      ai('播的旅行者！今晚 <b>20:00</b> 老张会讲新版本深渊满星配队，你上次卡的深渊下半正好会讲到～', false);
-      ai(`<div class="card-msg"><div class="cover live">🔴 今晚 20:00 直播预告</div><div class="cbody"><b>新版本深渊满星配队 · 零氪也能抄</b><span class="meta">已有 1,203 人预约</span><button class="btn ${state.booked ? 'done' : ''}" onclick="book(this)">${state.booked ? '✓ 已预约，开播提醒你' : '一键预约直播'}</button></div><div class="src">来自 B站直播间 · 提瓦特老张</div></div>`, true);
-      step('③粉丝记忆', '读取档案「10.09 问过深渊下半」→ 回复中主动关联');
+      clone(`播！今晚 <b>8 点</b>讲新版本深渊满星配队${state.mem.some(m => m.includes('深渊')) ? '，你上次卡的下半我会重点讲，记得来' : '，来不来旅行者'} 😎`);
+      setTimeout(() => bot(`<div class="card-msg"><div class="cover live">🔴 今晚 20:00 · 老张直播</div><div class="cbody"><b>新版本深渊满星配队 · 零氪也能抄</b><span class="meta">已有 1,203 人预约</span><button class="btn ${state.booked ? 'done' : ''}" onclick="book(this)">${state.booked ? '✓ 已预约，开播私聊提醒' : '一键预约直播'}</button></div><div class="src">B站直播间 · 开播前 10 分钟私聊提醒，不 @全体</div></div>`, true), 400);
     });
   },
   video() {
-    me('老张最近更新了啥？');
-    step('②分层承接', '意图=<b>追更</b> → 返回 UP 主最新内容卡片，可跳转 B 站');
+    me('@老张 最近更新了啥？');
+    step('②分层承接', `追更 → ${R.clone} 按粉丝兴趣挑视频推荐，而不是甩列表`);
     reply(() => {
-      ai('这周老张更新了 2 期，第一期和你在练的火系主C有关，推荐先看👇');
-      ai(`<div class="card-msg"><div class="cover">▶ 零氪也能用的火系队 · 12:30</div><div class="cbody"><b>零氪也能用的火系队！四星配队全解析</b><span class="meta">61.5万播放 · 2天前</span><button class="btn" onclick="toast('跳转 B 站视频页')">去 B 站观看</button></div><div class="src">B站视频 · 提瓦特老张</div></div>`, true);
-      ai(`<div class="card-msg"><div class="cbody list"><b>📚 更多内容</b><a href="javascript:toast('跳转 B 站')">· 新版本深渊满星配队（86.2万）</a><a href="javascript:toast('跳转 B 站')">· 版本前瞻 3 分钟速看（48万）</a><a href="javascript:toast('跳转 B 站合集')">· 全部攻略合集 ›</a></div></div>`, true);
+      clone('这周更了两期～第一期《零氪也能用的火系队》你一定要看，你在练的火C就是主角 🔥');
+      clone(`<div class="card-msg"><div class="cover">▶ 零氪也能用的火系队 · 12:30</div><div class="cbody"><b>零氪也能用的火系队！四星配队全解析</b><span class="meta">61.5万播放 · 2天前</span><button class="btn" onclick="toast('跳转 B 站视频页')">去 B 站看</button></div></div>`, true);
     });
   },
   guide() {
-    me('深渊12层下半用什么队？');
-    step('②分层承接', '意图=<b>攻略问答</b> → RAG 检索老张视频文稿，优先引用 UP 主原内容');
+    me('@老张 深渊12层下半用什么队？');
+    step('②分层承接', `攻略问答 → ${R.clone} 检索老张视频文稿，用第一人称讲"我视频里怎么打"`);
     reply(() => {
-      ai('按老张上期视频的思路，下半推荐这样配（结合你在练的火系主C）：<br>① 火系主C + 增伤辅助 + 治疗 + 挂元素副C<br>② 圣遗物主C 优先暴击头、火伤杯<br>③ 手法：开场先挂元素再进主C<br><span style="color:#8a8f99;font-size:12px">出处：《深渊满星配队》06:12</span>');
-      ai(`<div class="card-msg"><div class="cbody"><b>🎬 跳到视频讲解片段</b><span class="meta">《深渊满星配队》06:12 – 09:40</span><button class="btn" onclick="toast('跳转 B 站视频 06:12')">从 06:12 开始看</button><button class="btn" style="background:#f5a623" onclick="S.diag()">配队诊断（会员）</button></div></div>`, true);
-      remember('10.12 问深渊12层下半配队，卡在下半，在练火系主C');
-      step('③粉丝记忆', '更新档案摘要：<b>深渊下半仍未通关</b>，下次主动跟进');
+      clone('这个我上期视频专门讲过！你在练火C的话这么配：<br>① 火C + 增伤辅助 + 奶 + 挂元素副C<br>② 圣遗物暴击头、火伤杯<br>③ 开场先挂元素再进火C<br><span style="color:#8a8f99;font-size:12px">出处：我的《深渊满星配队》06:12</span>');
+      clone(`<div class="card-msg"><div class="cbody"><b>🎬 直接看我讲这段</b><span class="meta">《深渊满星配队》06:12 – 09:40</span><button class="btn" onclick="toast('跳转 B 站视频 06:12')">从 06:12 开始看</button></div></div>`, true);
+      clone('打完回来告诉我过没过哈，我记着呢 ✍️');
+      remember('10.12 问深渊12层下半配队，在练火系主C');
+      step('③粉丝记忆', '分身写入记忆：<b>深渊下半未通关、在练火C</b> → 之后主动跟进');
     });
-  },
-  diag() {
-    me('想要配队诊断');
-    if (state.sub === '未订阅') { step('⑤商业化', '会员权益 → 粉丝主动触发才展示订阅，不强推'); reply(() => { ai('配队诊断是<b>攻略会员</b>的权益，老张会基于你的账号练度给出专属方案～看看会员档位？'); S.subCard(); }); }
-    else reply(() => ai('收到！把你的角色练度截图发我，10 分钟内给你专属配队方案 ✅'));
-  },
-  sign() {
-    me('签到');
-    step('④群活跃', '每日签到 → 积分累计群等级，连续 7 天解锁抽奖');
-    reply(() => {
-      const ok = !state.signed; state.signed = true;
-      $('#p-sign').textContent = '连续 7 天 🎉';
-      ai(`<div class="card-msg"><div class="cbody"><b>${ok ? '✅ 签到成功 +10 积分' : '今天已经签过啦'}</b><div class="sign-days"><span class="ok">一</span><span class="ok">二</span><span class="ok">三</span><span class="ok">四</span><span class="ok">五</span><span class="ok">六</span><span class="today">日</span></div><span class="meta">连续 7 天！解锁本周抽奖资格 · 群等级 Lv.3「常驻观众」</span><button class="btn" onclick="S.draw()">去抽奖</button></div></div>`, true);
-    });
-  },
-  draw() {
-    me('抽奖！');
-    if (!state.signed) { reply(() => ai('需要连续签到 7 天才能抽哦，今天先签个到？')); return; }
-    step('④群活跃', '抽奖托管：资格校验 → 开奖 → 结果公示，UP 主零操作');
-    reply(() => {
-      const prizes = ['老张签名卡', '月卡×1', '谢谢参与', '周边亚克力', '原石兑换码', '会员 7 天'];
-      ai(`<div class="card-msg"><div class="cbody"><b>🎁 本周粉丝抽奖</b><div class="wheel" id="wheel">${prizes.map(p => `<span>${p}</span>`).join('')}</div><span class="meta" id="wres">抽奖中…</span></div></div>`, true);
-      const cells = [...document.querySelectorAll('#wheel span')]; let i = 0, n = 0;
-      const t = setInterval(() => { cells.forEach(c => c.classList.remove('hit')); cells[i % 6].classList.add('hit'); i++; if (++n > 14) { clearInterval(t); cells.forEach(c => c.classList.remove('hit')); cells[5].classList.add('hit'); document.getElementById('wres').innerHTML = '🎉 抽中 <b>攻略会员 7 天体验</b>，已自动发放'; state.drawn = true; } }, 110);
-    }, 400);
-  },
-  subCard() {
-    ai(`<div class="card-msg"><div class="cbody"><b>⭐ 老张的粉丝订阅</b>
-      <div class="tier"><b>旅行者</b><span class="price">免费</span><br>群内问答 · 签到抽奖 · 开播提醒</div>
-      <div class="tier hot"><b>攻略会员</b><span class="price">¥12/月</span><br>配队诊断 · 会员专属攻略 · 抽奖双倍</div>
-      <div class="tier"><b>冒险家舰长</b><span class="price">¥68/月</span><br>分身 1v1 · 老张亲自回复 · 直播连麦 · 周边折扣</div>
-      <button class="btn" onclick="subscribe()">开通攻略会员</button></div><div class="src">创作者 70% · 平台 30%</div></div>`, true);
-  },
-  sub() { me('会员有什么权益？'); step('⑤商业化', '粉丝主动询问 → 展示订阅档位'); reply(() => S.subCard()); },
-  team() {
-    me('有人一起打周本吗？60级');
-    step('④群活跃', '识别<b>组队</b>意图 → 按世界等级 / 在线时段匹配');
-    reply(() => {
-      ai('帮你找到 2 位同时段在线、世界等级相近的群友：');
-      ai(`<div class="card-msg"><div class="cbody"><b>🤝 组队匹配</b><span class="meta">· 北斗船员（WL8，常晚上在线）<br>· 甜甜花（WL8，缺一位打周本）</span><button class="btn" onclick="toast('已拉起临时小群「周本三缺一」');step('④群活跃','组队成功 → 临时小群已创建')">一键拉小群</button></div></div>`, true);
-    });
-  },
-  game() {
-    me('最近有什么活动？');
-    step('②分层承接', '意图=<b>游戏资讯</b> → 推送版本更新卡片，并关联 UP 主相关内容');
-    reply(() => {
-      ai(`<div class="card-msg"><div class="cover game">📢 版本更新速递</div><div class="cbody list">
-        <a href="javascript:toast('打开活动详情')">· 10.18 20:00 新版本前瞻直播</a>
-        <a href="javascript:toast('打开卡池详情')">· 10.22 限定角色复刻卡池</a>
-        <a href="javascript:toast('打开活动详情')">· 限时活动「秋日庆典」· 含 420 原石</a>
-        <span class="meta">💡 老张将在前瞻后 1 小时发速看视频，兑换码会员优先推送</span>
-        <button class="btn" onclick="toast('已订阅版本提醒')">订阅版本提醒</button></div></div>`, true);
-    });
-  },
-  say() {
-    me('老张！能出一期剧情解析吗？想看～');
-    step('②分层承接', '意图=<b>向 UP 主表达</b> · 普通粉丝 → 分身接话 + 汇总进「粉丝想对你说」');
-    reply(() => {
-      ai(`<div class="bubble voice">▶︎ ▂▃▅▆▅▃ <i>0:06</i></div>`, true);
-      ai('（语音转文字）“好嘞旅行者！剧情解析已经有 32 个人催了，排进选题池了，出了第一时间告诉你～”');
-      step('⑤KOL洞察', '「剧情解析」诉求 +1 → 已累计 32 次，进入 KOL 选题建议');
-    }, 900);
   },
   followup() {
     sys('— 三天后 · 10月15日 19:40 —');
-    step('③粉丝记忆', '读取档案「深渊下半卡关」→ 助手<b>主动</b>私聊跟进，不等粉丝开口');
-    ai('小雷，上次说深渊下半卡住了，现在过了吗？老张今晚 8 点刚好讲新一期深渊，要帮你预约吗？');
-    setTimeout(() => { me('过了！照着那个火系队打的，谢谢！'); reply(() => { ai('太强了旅行者 🎉 已帮你记下「深渊已通关」，下次有新配队第一时间告诉你～'); remember('10.15 深渊已通关 ✓'); step('③粉丝记忆', '档案更新：<b>深渊已通关</b>，二次回访 +1'); }); }, 900);
+    step('③粉丝记忆', `${R.clone} <b>主动</b>私聊跟进上次的问题——"老张记得我"`);
+    clone('小雷！上次说深渊下半卡住了，现在过了没？今晚 8 点我刚好讲新一期深渊～');
+    setTimeout(() => { me('过了！照你那个火系队打的，谢谢老张！'); reply(() => {
+      clone('哈哈太强了 🎉 这必须让本人知道，我转给他了！');
+      remember('10.15 深渊已通关 ✓');
+      step('②分层承接', `"用老张攻略通关" 是高情感时刻 → 升级给 ${R.real}`);
+      setTimeout(() => { sys('提瓦特老张 上线了'); real('@小雷 恭喜通关！看到你照着视频打过了真的很开心，今晚直播给你点个名 🙌'); step('⑤KOL洞察', `${R.real} 在待办队列一键回复 · 记入「我和老张」`); }, 1400);
+    }); }, 900);
   },
-  gear() {
-    me('用手机玩老是卡，有啥推荐吗？');
-    step('⑤商业化', '粉丝<b>主动</b>询问设备 → 兴趣标签「移动端」命中商单「某手机品牌」；本周未推送过 → 允许展示');
+  sign() {
+    me('签到');
+    step('④群活跃', `工具类请求 → ${R.bot} 处理，不占用老张分身`);
     reply(() => {
-      ai('先试试把画质调到「中」、帧率 45，能明显降温～老张自己用的设置在这期视频 03:20。如果考虑换设备，这款是老张近期合作的：');
-      ai(`<div class="card-msg"><div class="cbody"><b><span class="adtag">合作</span>某品牌游戏手机</b><span class="meta">老张实测：深渊 60 帧 30 分钟不降频<br>群友专属：会员再减 100</span><button class="btn" onclick="toast('跳转品牌页（Demo）');step('⑤商业化','商单点击 +1，回写档案兴趣「移动端」')">查看详情</button><span class="meta" style="display:flex;gap:10px"><a href="javascript:toast('已减少此类推荐');step('⑤商业化','点踩 +1 → 计入护栏；点踩率 >10% 自动暂停该商单')">👎 不感兴趣</a></span></div></div>`, true);
-      step('⑤商业化', '频控：该粉丝本周商业推送 1/1，本周不再推送');
-    });
+      const ok = !state.signed; state.signed = true; $('#p-sign').textContent = '连续 7 天 🎉';
+      bot(`<div class="card-msg"><div class="cbody"><b>${ok ? '✅ 签到成功 +10 积分' : '今天已经签过啦'}</b><div class="sign-days"><span class="ok">一</span><span class="ok">二</span><span class="ok">三</span><span class="ok">四</span><span class="ok">五</span><span class="ok">六</span><span class="today">日</span></div><span class="meta">连续 7 天！解锁本周抽奖 · 群等级 Lv.3「常驻观众」</span><button class="btn" onclick="S.draw()">去抽奖</button></div></div>`, true);
+    }, 500, BOT);
+  },
+  draw() {
+    me('抽奖');
+    if (!state.signed) { reply(() => bot('连续签到 7 天才能抽哦，先签个到？'), 400, BOT); return; }
+    step('④群活跃', `${R.bot} 托管抽奖：资格校验 → 开奖 → 公示`);
+    reply(() => {
+      const prizes = ['老张签名卡', '月卡×1', '谢谢参与', '周边亚克力', '原石兑换码', '会员 7 天'];
+      bot(`<div class="card-msg"><div class="cbody"><b>🎁 本周粉丝抽奖</b><div class="wheel" id="wheel">${prizes.map(p => `<span>${p}</span>`).join('')}</div><span class="meta" id="wres">抽奖中…</span></div></div>`, true);
+      const cells = [...document.querySelectorAll('#wheel span')]; let i = 0, n = 0;
+      const t = setInterval(() => { cells.forEach(c => c.classList.remove('hit')); cells[i++ % 6].classList.add('hit'); if (++n > 14) { clearInterval(t); cells.forEach(c => c.classList.remove('hit')); cells[0].classList.add('hit'); $('#wres').innerHTML = '🎉 抽中 <b>老张签名卡</b>！'; setTimeout(() => clone('恭喜小雷！签名卡我这周就签，写啥 to 签你来定 ✍️'), 700); } }, 110);
+    }, 400, BOT);
+  },
+  subCard() {
+    bot(`<div class="card-msg"><div class="cbody"><b>⭐ 老张的粉丝订阅</b>
+      <div class="tier"><b>旅行者</b><span class="price">免费</span><br>和老张分身聊天 · 签到抽奖 · 开播提醒</div>
+      <div class="tier hot"><b>攻略会员</b><span class="price">¥12/月</span><br>分身配队诊断 · 会员专属攻略 · 抽奖双倍</div>
+      <div class="tier"><b>冒险家舰长</b><span class="price">¥68/月</span><br>每月老张本人亲回 · 直播连麦 · 周边折扣</div>
+      <button class="btn" onclick="subscribe()">开通攻略会员</button></div><div class="src">创作者 70% · 平台 30%</div></div>`, true);
+  },
+  sub() { me('会员有什么权益？'); step('⑤商业化', `粉丝主动问 → ${R.bot} 展示档位；核心卖点是"离老张更近"`); reply(() => S.subCard(), 500, BOT); },
+  diag() { S.sub(); },
+  team() {
+    me('有人一起打周本吗？WL8');
+    step('④群活跃', `组队撮合 → ${R.bot}`);
+    reply(() => bot(`<div class="card-msg"><div class="cbody"><b>🤝 找到 2 位同时段在线的群友</b><span class="meta">· 北斗船员（WL8，常晚上在线）<br>· 甜甜花（WL8，缺一位打周本）</span><button class="btn" onclick="toast('已拉起临时小群「周本三缺一」');step('④群活跃','组队成功 → 临时小群已创建')">一键拉小群</button></div></div>`, true), 500, BOT);
+  },
+  game() {
+    me('最近有什么活动？');
+    step('②分层承接', `资讯类 → ${R.bot} 发卡片；${R.clone} 补一句老张自己的建议`);
+    reply(() => {
+      bot(`<div class="card-msg"><div class="cover game">📢 版本更新速递</div><div class="cbody list"><a href="javascript:toast('打开详情')">· 10.18 20:00 新版本前瞻直播</a><a href="javascript:toast('打开详情')">· 10.22 限定角色复刻卡池</a><a href="javascript:toast('打开详情')">· 限时活动「秋日庆典」· 含 420 原石</a><button class="btn" onclick="toast('已订阅版本提醒')">订阅版本提醒</button></div></div>`, true);
+      setTimeout(() => clone('复刻那个角色我建议抽！前瞻后 1 小时我出速看视频，到时候私聊你 👀'), 600);
+    }, 500, BOT);
+  },
+  say() {
+    me('@老张 能出一期剧情解析吗？想看～');
+    step('②分层承接', `向UP主表达 → ${R.clone} 语音回应 + 汇总进「粉丝想对你说」`);
+    reply(() => {
+      clone(`<div class="bubble voice">▶︎ ▂▃▅▆▅▃ <i>0:06 · AI合成语音（老张授权）</i></div>`, true);
+      clone('（转文字）"安排！剧情解析已经 32 个人催了，排进选题池了，出了第一个告诉你～"');
+      step('⑤KOL洞察', '「剧情解析」诉求累计 32 次 → KOL 选题建议');
+    }, 900);
   },
   emo() {
     me('又歪了……攒了三个月的原石');
-    step('②分层承接', '意图=<b>情绪表达</b> · 普通粉丝 → 群助手人设轻量回应，不推送任何商业内容');
-    reply(() => ai('抱抱旅行者 🫂 歪了的那个其实很能打，老张那期《常驻角色也能用》里专门讲过怎么配，要看看吗？保底就在下一次了，冲！'));
+    step('②分层承接', `情绪表达 → ${R.clone} 以老张口吻安慰，不推任何商业内容`);
+    reply(() => clone('啊这……抱抱 🫂 我上个版本也连歪两次。歪的那个其实很能打，我《常驻也能用》那期讲过怎么配，下次必出！'));
+  },
+  gear() {
+    me('@老张 用手机玩老是卡，你用的啥？');
+    step('⑤商业化', `粉丝<b>主动</b>问设备 → ${R.clone} 先给免费解法，再提合作款（标注合作）；本周推送 1/1`);
+    reply(() => {
+      clone('先把画质调「中」、帧率 45，能降不少温，我的设置在这期 03:20。我自己直播用的是这台，最近也在合作，介意的话忽略就好：');
+      clone(`<div class="card-msg"><div class="cbody"><b><span class="adtag">合作</span>某品牌游戏手机</b><span class="meta">我实测：深渊 60 帧 30 分钟不降频<br>群友专属：会员再减 100</span><button class="btn" onclick="toast('跳转品牌页（Demo）')">看看</button><a class="meta" href="javascript:toast('已减少此类推荐');step('⑤商业化','点踩 +1 → 点踩率 >10% 自动暂停该商单')">👎 不感兴趣</a></div></div>`, true);
+    });
   },
   ad() {
     other('路人甲', '#999', '低价代练代肝，深渊满星包过，加V：xxxxx');
-    step('④群秩序', '识别广告：引流 + 联系方式，<b>高置信</b> → 自动撤回并提醒；低置信仅提示管理员');
-    setTimeout(() => { const last = [...chat.querySelectorAll('.row .bubble')].pop(); last.classList.add('recall'); sys('群助手撤回了一条广告消息 · 已记录并通知管理员'); }, 700);
+    step('④群秩序', `${R.bot} 识别广告 → 高置信自动撤回；低置信仅提醒管理员`);
+    setTimeout(() => { [...chat.querySelectorAll('.row .bubble')].pop().classList.add('recall'); bot('已撤回一条广告消息，请大家注意甄别 🙏'); }, 700);
   },
   captain() {
-    other('阿月', '#c27c00', '老张！上期视频那个配队我想到个改进，副C换成水系反应会更稳', '舰长');
-    step('②分层承接', '层级=<b>舰长</b> × 意图=<b>提建议</b> → 命中升级规则，进入 UP 主<b>高优待回复队列</b>');
-    reply(() => ai('好思路阿月！已经原话转给老张本人啦，他上线会亲自回你 🔺'));
-  },
-  profileOld() {
-    me('我的档案');
-    step('③粉丝记忆', '粉丝可查看助手记住了什么，并一键清除');
-    reply(() => ai(`<div class="card-msg"><div class="cbody"><b>🗂 助手记住的关于你</b><span class="meta">层级：${$('#p-level').textContent}<br>来意：${state.intent}<br>群等级：${state.signed ? 'Lv.3 常驻观众' : 'Lv.2'}<br>${state.mem.length ? '摘要：' + state.mem.join('；') : '摘要：暂无'}</span><button class="btn ghost" style="background:#f53f3f" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';toast('已清除互动摘要');step('③粉丝记忆','粉丝主动清除摘要 → 档案仅保留层级与来意')">一键清除记忆</button></div><div class="src">只记录与群互动相关的摘要 · UP 主看不到私聊原文</div></div>`, true));
+    other('阿月', '#c27c00', '@老张 上期配队我想到个改进，副C换成水系反应会更稳', '舰长');
+    step('②分层承接', `舰长 × 提建议 → ${R.clone} 先接住，再升级到 ${R.real} 高优队列`);
+    reply(() => {
+      clone('好思路！这个得本人亲自回你，已经转给他了 🔺');
+      setTimeout(() => { sys('提瓦特老张 上线了'); real('@阿月 试了，确实更稳！下期视频给你署名感谢 🙏'); }, 1500);
+    });
   },
   care() {
     sys('— 一个月后 · 小雷已 10 天未发言 —');
-    step('⑤KOL洞察', '活跃度下降 → 生成<b>流失预警</b>；助手发一次轻量关怀（不推商业内容）');
-    ai('小雷，好久没见你啦～这周老张出了新深渊配队，还有你在练的火系主C新圣遗物思路，有空来看看？');
-    step('⑤KOL洞察', 'KOL 后台「流失预警」名单 +1，可选择由老张本人互动');
-  },
-  profile() {
-    me('我的档案');
-    step('③粉丝记忆', '跳转<b>粉丝主页</b>：档案、成长、权益集中沉淀，聊天只负责问答');
-    reply(() => { ai(`<div class="card-msg"><div class="cbody"><b>🗂 你的粉丝主页已更新</b><span class="meta">等级、记忆、签到、权益都在这里</span><button class="btn" onclick="openHome()">打开我的主页 ›</button></div></div>`, true); setTimeout(openHome, 500); });
+    step('⑤KOL洞察', `活跃下降 → 流失预警；${R.clone} 发一次轻量问候（不带商业内容）`);
+    clone('小雷好久不见～最近新深渊出了，你的火C我想到个新圣遗物思路，回来看看？');
   },
   memory() {
-    me('你还记得我吗');
-    step('③粉丝记忆', '读取档案：来源、来意、历史提问、签到');
-    reply(() => ai(`当然！你是从<b>《深渊配队》</b>那期来的旅行者，在练火系主C，深渊下半卡了好几天${state.signed ? '，而且已经连续签到 7 天啦' : ''}。<br><span style="color:#8a8f99;font-size:12px">想让我忘记这些？在「我的档案」里可一键清除</span>`));
-  }
+    me('@老张 你还记得我吗');
+    step('③粉丝记忆', `${R.clone} 读取记忆，像老朋友一样接上`);
+    reply(() => clone(`当然！你是看《深渊配队》那期来的，在练火C${state.mem.some(m => m.includes('通关')) ? '，还靠我的队过了深渊下半 😎' : '，深渊下半还卡着对吧'}${state.signed ? '，而且连签 7 天了' : ''}。想看我记了啥？点上面「我和老张」`));
+  },
+  profile() { openHome(); }
 };
 
-window.book = btn => { state.booked = true; btn.classList.add('done'); btn.textContent = '✓ 已预约，开播提醒你'; step('②分层承接', '直播预约成功 → 开播前 10 分钟私聊提醒（不 @全体）'); toast('预约成功'); };
-window.subscribe = () => { state.sub = '攻略会员 ¥12/月'; $('#p-sub').textContent = state.sub; $('#p-level').textContent = '攻略会员 · 粉丝牌 6 级'; step('⑤商业化', '订阅成功 → 层级升级，解锁配队诊断'); toast('已开通攻略会员（Demo）'); reply(() => ai('欢迎成为攻略会员！🎉 现在就可以用配队诊断啦～')); };
+window.book = btn => { state.booked = true; btn.classList.add('done'); btn.textContent = '✓ 已预约，开播私聊提醒'; step('②分层承接', '预约成功 → 开播前 10 分钟私聊提醒'); toast('预约成功'); };
+window.subscribe = () => { state.sub = '攻略会员 ¥12/月'; $('#p-sub').textContent = state.sub; $('#p-level').textContent = '攻略会员 · 粉丝牌 6 级'; step('⑤商业化', '订阅成功 → 解锁分身配队诊断'); toast('已开通攻略会员（Demo）'); reply(() => clone('欢迎加入会员！以后配队直接丢截图给我 💪')); };
 window.S = S; window.toast = toast; window.step = step;
 
-const chips = [['🔴 今晚开播吗', 'live'], ['📖 深渊配队', 'guide'], ['▶ 最新视频', 'video'], ['✅ 签到', 'sign'], ['🎁 抽奖', 'draw'], ['🤝 组队', 'team'], ['📢 版本活动', 'game'], ['💬 对老张说', 'say'], ['😭 又歪了', 'emo'], ['📱 手机卡', 'gear'], ['⭐ 订阅会员', 'sub'], ['👤 我的主页', 'profile'], ['👑 舰长发言', 'captain'], ['🚫 有人发广告', 'ad']];
-$('#chips').innerHTML = chips.map(([t, k]) => `<button data-k="${k}">${t}</button>`).join('');
-$('#chips').onclick = e => { const k = e.target.dataset.k; if (!k) return; if (!state.joined) { toast('先完成入群申请'); return; } S[k](); };
-$('#pinned').onclick = () => S.live();
+/* 输入区：@对象 + 功能面板（替代原来的一排快捷问题） */
+let target = '老张';
+document.querySelectorAll('.at').forEach(b => b.onclick = () => { target = b.dataset.t; document.querySelectorAll('.at').forEach(x => x.classList.toggle('on', x === b)); $('#msg').placeholder = target === '老张' ? '和老张分身聊聊…' : '@群助手 签到/组队/活动…'; $('#msg').focus(); });
+$('#plus').onclick = () => $('#panel').classList.toggle('on');
+$('#panel').onclick = e => { const k = e.target.closest('[data-k]')?.dataset.k; if (!k) return; $('#panel').classList.remove('on'); if (!state.joined) { toast('先完成入群申请'); return; } S[k](); };
+document.querySelectorAll('[data-demo]').forEach(b => b.onclick = () => { if (!state.joined) { toast('先完成入群申请'); return; } S[b.dataset.demo](); });
+$('#pinned').onclick = () => state.joined ? S.live() : toast('先完成入群申请');
 
-const rules = [[/歪|保底/, 'emo'], [/手机|卡顿|卡吗|外设|手柄/, 'gear'], [/档案|忘记/, 'profile'], [/播|直播|预约/, 'live'], [/视频|更新|最新/, 'video'], [/深渊|配队|圣遗物|攻略|怎么/, 'guide'], [/签到/, 'sign'], [/抽奖/, 'draw'], [/会员|订阅|舰长/, 'sub'], [/组队|一起|周本/, 'team'], [/活动|版本|卡池|兑换码/, 'game'], [/记得/, 'memory'], [/老张|想看|希望/, 'say']];
+const rules = [[/歪|保底/, 'emo'], [/手机|卡顿|外设|手柄|用的啥/, 'gear'], [/记得/, 'memory'], [/播|直播|预约/, 'live'], [/视频|更新|最新/, 'video'], [/深渊|配队|圣遗物|攻略|怎么/, 'guide'], [/签到/, 'sign'], [/抽奖/, 'draw'], [/会员|订阅|舰长/, 'sub'], [/组队|一起|周本/, 'team'], [/活动|版本|卡池|兑换码/, 'game'], [/老张|想看|希望|剧情/, 'say']];
 function send() {
   if (!state.joined) { toast('先完成入群申请'); return; }
   const v = $('#msg').value.trim(); if (!v) return; $('#msg').value = '';
+  const text = (target === '老张' ? '@老张 ' : '@群助手 ') + v.replace(/^@\S+\s*/, '');
   const hit = rules.find(([r]) => r.test(v));
-  if (hit) { override = v; S[hit[1]](); return; }
-  me(v); step('②分层承接', '未命中已知意图 → 低置信，转入 UP 主待办'); reply(() => ai('这个我拿不准，已经帮你转给老张本人啦，他上线会看到～'));
+  if (hit) { override = text; S[hit[1]](); return; }
+  me(text);
+  if (target === '老张') { step('②分层承接', `${R.clone} 低置信 → 不编造，转入老张本人待办`); reply(() => clone('这个我不太确定，不想瞎说，帮你转给本人了，他上线回你 🙏')); }
+  else reply(() => bot('我只会签到、抽奖、组队、查活动～聊天找 @老张 哦'), 400, BOT);
 }
 $('#send').onclick = send; $('#msg').onkeydown = e => e.key === 'Enter' && send();
 
 /* 开场：群内氛围 */
 sys('10月12日 19:02');
-other('北斗船员', '#7f9cf5', '今晚老张播不播啊', '粉丝牌14');
-ai('播的！20:00 准时开，点群公告就能预约～');
+other('北斗船员', '#7f9cf5', '@老张 今晚播不播啊', '粉丝牌14');
+say(CLONE, '播播播！8 点准时，迟到罚我抽卡必歪 😂');
 other('甜甜花', '#f78fb3', '[图片] 我画的老张Q版，大家看看😆', '粉丝牌12');
-ai('哇画得太可爱了！已帮你投到本周「二创精选」，老张上线会看到 ✨');
+say(CLONE, '哇这也太可爱了吧！我先存了，本人上线一定看 ✨');
 
 /* ① 入群申请 */
 $('#opts').onclick = e => { const v = e.target.dataset.v; if (!v) return; state.intent = v; document.querySelectorAll('#opts span').forEach(s => s.classList.toggle('on', s === e.target)); recJoin(); };
 $('#auth').onchange = () => { $('#authinfo').style.display = $('#auth').checked ? '' : 'none'; recJoin(); };
 function recJoin() {
   const r = $('#jrec'); const low = !$('#auth').checked && state.intent === '随便看看';
-  r.className = 'jrec' + (low ? ' alt' : ''); r.innerHTML = low ? '💡 推荐先加入<b>开放水友群</b>，熟悉后再来核心群（仍可直接申请）' : `✅ 匹配度高：推荐加入<b>核心粉丝群</b>`;
+  r.className = 'jrec' + (low ? ' alt' : ''); r.innerHTML = low ? '💡 推荐先加入<b>开放水友群</b>，熟悉后再来核心群（仍可直接申请）' : '✅ 匹配度高：推荐加入<b>核心粉丝群</b>';
 }
 function joinGroup() {
   if (state.joined) return; state.joined = true;
@@ -213,19 +210,19 @@ function joinGroup() {
   $('#p-src').textContent = auth ? '《深渊配队》视频' : '未知（未授权）';
   $('#p-sign').textContent = '连续 6 天';
   remember('10.12 入群');
-  step('①入群识别', `小雷入群：${auth ? '粉丝牌 6 级 · 关注 12 天 · 近期看《深渊配队》' : '未授权，仅按答题建档'} · 来意=<b>${state.intent}</b> → 建立粉丝档案初版`);
-  step('①入群识别', 'KOL 后台：新增来源「深渊视频」+1');
+  step('①入群识别', `${auth ? '粉丝牌 6 级 · 关注 12 天 · 近期看《深渊配队》' : '未授权，仅按答题建档'} · 来意=<b>${state.intent}</b> → 建立粉丝档案`);
   sys('小雷 加入了群聊');
-  const tip = { '问攻略': '有卡关的地方直接 @我，老张的 128 期视频我都学过啦', '找队友': '想组队直接说「组队+玩法」，我帮你找同时段在线的群友', '追更UP主': '开播和更新我会私聊提醒你，不 @全体打扰', '随便看看': '先逛逛，底下快捷按钮随便点～' }[state.intent];
-  setTimeout(() => { ai(`欢迎小雷～🎉 ${auth ? '看你最近在看<b>深渊配队</b>，' : ''}${tip}！`); ai(`<div class="card-msg"><div class="cbody"><b>👤 已为你建立粉丝主页</b><span class="meta">等级 · 签到 · 助手记住的事 · 会员权益，随时可查可删</span><button class="btn" onclick="openHome()">查看我的主页 ›</button></div></div>`, true); }, 400);
+  setTimeout(() => bot('欢迎新人～群规：禁广告、禁引战。签到/抽奖/组队找我，想和老张聊直接 @老张 👇'), 300);
+  const hook = { '问攻略': '有卡关直接问我，我视频里讲过的都能答', '找队友': '想组队喊群助手就行，我也常在群里冒泡', '追更UP主': '开播我私聊叫你，不 @全体吵你', '随便看看': '随便逛，想聊天随时 @我' }[state.intent];
+  setTimeout(() => { clone(`小雷你好呀～我是老张的数字分身 👋 ${auth ? '看你最近在刷我的<b>深渊配队</b>，' : ''}${hook}！`); step('③粉丝记忆', `${R.clone} 第一次打招呼：引用入群来源与来意，建立"老张认识我"的第一印象`); }, 1100);
   markJ(0);
 }
 $('#jbtn').onclick = joinGroup;
 
 /* 演示剧本 */
 const J = [() => joinGroup(), () => S.guide(), () => S.followup(), () => { S.sign(); setTimeout(() => S.team(), 1500); }, () => S.gear(), () => S.care()];
-function markJ(i) { document.querySelectorAll('#journey button').forEach((b, k) => { b.classList.toggle('on', k === i); if (k < i || (k === i)) b.classList.add('done'); }); }
-$('#journey').onclick = e => { const b = e.target.closest('button'); if (!b) return; const i = +b.dataset.j; if (i > 0 && !state.joined) joinGroup(); setTimeout(() => { J[i](); markJ(i); }, i > 0 && !state.joined ? 900 : 0); };
+function markJ(i) { document.querySelectorAll('#journey button').forEach((b, k) => { b.classList.toggle('on', k === i); if (k <= i) b.classList.add('done'); }); }
+$('#journey').onclick = e => { const b = e.target.closest('button'); if (!b) return; const i = +b.dataset.j; const wait = i > 0 && !state.joined; if (wait) joinGroup(); setTimeout(() => { J[i](); markJ(i); }, wait ? 1600 : 0); };
 
 /* ---------- 视图切换 ---------- */
 document.querySelectorAll('.switch button').forEach(b => b.onclick = () => {
@@ -310,29 +307,30 @@ drawCharts = function () {
     { label: 'Agent 上线', data: [null, null, null, 29, null, null, null, null], borderColor: C[1], pointRadius: 6, showLine: false }] }, options: opt });
 };
 
-/* ---------- 粉丝主页 ---------- */
+/* ---------- 我和老张（关系主页） ---------- */
 function renderHome() {
   const auth = $('#auth').checked, sub = state.sub !== '未订阅';
-  const days = ['一','二','三','四','五','六','日'].map((d, i) => `<span class="${i < 6 ? 'ok' : (state.signed ? 'ok' : 'today')}">${d}</span>`).join('');
-  const ben = [['💬','群内问答',1],['🔔','开播提醒',1],['✅','签到抽奖',1],['🤝','组队撮合',1],['🩺','配队诊断',sub],['📚','会员攻略',sub],['🎯','抽奖双倍',sub],['🎙','老张亲回',0]];
+  const close = Math.min(100, 20 + state.cloneChats * 6 + state.real.length * 20 + (state.signed ? 10 : 0));
+  const days = ['一','二','三','四','五','六','日'].map((d, i) => `<span class="${i < 6 || state.signed ? 'ok' : 'today'}">${d}</span>`).join('');
   $('#hbody').innerHTML = `
-    <div class="hero"><div class="avatar big">雷</div><div><b>小雷</b> ${sub ? '<span class="tag gold" style="font-size:10px">攻略会员</span>' : ''}
-      <small>${auth ? 'B站粉丝牌 6 级 · 关注 12 天' : '未授权 B 站信息'} · 入群 ${state.joined ? '今天' : '—'}</small>
-      <small>群等级 Lv.${state.signed ? 3 : 2}「${state.signed ? '常驻观众' : '新晋旅行者'}」</small><div class="lvbar"><i style="width:${state.signed ? 35 : 80}%"></i></div></div></div>
-    <div class="hsec"><h5>📌 我的标签 <small>来自入群选择与提问</small></h5><div class="tags"><span>来意：${state.intent}</span>${auth ? '<span>来源：深渊配队视频</span>' : ''}${state.mem.some(m => m.includes('火系')) ? '<span>在练：火系主C</span>' : ''}${state.mem.some(m => m.includes('通关')) ? '<span>深渊12层 ✓</span>' : ''}<span>活跃：周末晚上</span></div></div>
-    <div class="hsec"><h5>✅ 签到 <small>连续 ${state.signed ? 7 : 6} 天 · 满 7 天解锁抽奖</small></h5><div class="sign-days">${days}</div>
+    <div class="hero duo"><div class="pair"><div class="avatar big me">雷</div><span>💞</span><div class="avatar big ai">张</div></div>
+      <b>小雷 × 老张</b><small>认识第 ${state.mem.some(m => m.startsWith('10.15')) ? 4 : 1} 天 · ${auth ? '粉丝牌 6 级' : '未授权'} · 群等级 Lv.${state.signed ? 3 : 2}</small>
+      <div class="close"><span>亲密度</span><div class="lvbar"><i style="width:${close}%"></i></div><b>${close}</b></div>
+      <div class="stat3"><div><b>${state.cloneChats}</b>和分身聊天</div><div><b>${state.real.length}</b>老张亲自回复</div><div><b>${state.booked ? 1 : 0}</b>预约直播</div></div></div>
+    <div class="hsec gold"><h5>🎙 老张亲自回复你 <small>分身转达后本人回的消息</small></h5>
+      ${state.real.length ? state.real.map(r => `<div class="realq">${r}</div>`).join('') : '<p class="privacy">还没有～和分身多聊聊，重要的事它会转给老张本人</p>'}</div>
+    <div class="hsec"><h5>🧠 分身记得关于你的事 <small>用于下次接着聊</small></h5>
+      <div class="tags"><span>来意：${state.intent}</span>${auth ? '<span>来自：深渊配队视频</span>' : ''}${state.mem.some(m => m.includes('火系')) ? '<span>在练：火系主C</span>' : ''}${state.mem.some(m => m.includes('通关')) ? '<span>深渊12层 ✓</span>' : ''}</div>
+      <div class="tl">${state.mem.map(m => { const [d, ...r] = m.split(' '); return `<div><i>${d}</i>${r.join(' ')}</div>`; }).join('') || '<div>暂无</div>'}</div>
+      <button class="hbtn ghost" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';renderHome();toast('已清除');step('③粉丝记忆','粉丝清除记忆 → 分身仅保留层级与来意')">让分身忘掉这些</button>
+      <p class="privacy">只记录与互动相关的摘要；老张本人只看到标签和摘要，看不到私聊原文。</p></div>
+    <div class="hsec"><h5>✅ 签到 · 抽老张签名卡 <small>连续 ${state.signed ? 7 : 6} 天</small></h5><div class="sign-days">${days}</div>
       <button class="hbtn" onclick="closeHome();S.${state.signed ? 'draw' : 'sign'}()">${state.signed ? '去抽奖' : '今日签到'}</button></div>
-    <div class="hsec"><h5>🧠 助手记住的事 <small>用于下次接着聊</small></h5>
-      <div class="tl">${state.mem.length ? state.mem.map(m => { const [d, ...r] = m.split(' '); return `<div><i>${d}</i>${r.join(' ')}</div>`; }).join('') : '<div>暂无记录</div>'}</div>
-      <button class="hbtn ghost" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';renderHome();toast('已清除互动记忆');step('③粉丝记忆','粉丝在主页清除记忆 → 仅保留层级与来意')">清除记忆</button>
-      <p class="privacy">只记录与群互动相关的摘要；UP 主只看到标签和摘要，看不到私聊原文。</p></div>
-    <div class="hsec"><h5>🔴 我的订阅 <small>${state.booked ? '已预约 1 场' : '暂无预约'}</small></h5>
-      <div class="kv"><span>今晚 20:00 深渊满星配队</span><b>${state.booked ? '✓ 已预约' : `<a href="javascript:closeHome();S.live()">去预约</a>`}</b></div>
-      <div class="kv"><span>版本更新提醒</span><b>已开启</b></div></div>
-    <div class="hsec"><h5>⭐ 我的权益 <small>${sub ? state.sub : '旅行者（免费）'}</small></h5>
-      <div class="grid-ben">${ben.map(([i, t, on]) => `<div class="${on ? '' : 'lock'}">${i}<br>${t}</div>`).join('')}</div>
-      ${sub ? '' : '<button class="hbtn" onclick="closeHome();S.sub()">升级会员 · ¥12/月</button>'}</div>`;
+    <div class="hsec"><h5>⭐ 离老张更近一步 <small>${sub ? state.sub : '旅行者（免费）'}</small></h5>
+      <div class="kv"><span>攻略会员 ¥12/月</span><b>分身配队诊断</b></div>
+      <div class="kv"><span>冒险家舰长 ¥68/月</span><b>每月本人亲回 · 直播连麦</b></div>
+      ${sub ? '' : '<button class="hbtn" onclick="closeHome();S.sub()">了解会员</button>'}</div>`;
 }
-window.openHome = () => { if (!state.joined) { toast('先完成入群申请'); return; } renderHome(); $('#home').classList.add('on'); step('③粉丝记忆', '打开粉丝主页 · 档案对粉丝<b>可见、可删</b>'); };
+window.openHome = () => { if (!state.joined) { toast('先完成入群申请'); return; } renderHome(); $('#home').classList.add('on'); step('③粉丝记忆', '打开「我和老张」：关系沉淀对粉丝<b>可见、可删</b>'); };
 window.closeHome = () => $('#home').classList.remove('on');
 window.state = state;
