@@ -86,6 +86,16 @@ th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vert
 @media(max-width:900px){.pipe,.journey,.road,.lv{grid-template-columns:1fr 1fr}.demo{grid-template-columns:1fr}.toc{display:none}.frame iframe{height:600px}}
 @media(max-width:520px){.pipe,.journey,.road,.lv{grid-template-columns:1fr}}
 @media print{html{scroll-snap-type:none}section{page-break-after:always;min-height:auto}.nav,.toc,.progress{display:none}.frame iframe{display:none}}
+.road.r5{grid-template-columns:repeat(5,1fr)}
+.road .card.star{background:var(--goldl)!important;border:2px solid var(--gold)}
+.evo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.evo span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-weight:600}.evo span small{display:block;font-weight:400;color:var(--t3);font-size:12px}.evo span.on{border-color:var(--gold);background:var(--goldl)}.evo i{font-style:normal;color:var(--t3)}
+.pa{display:grid;grid-template-columns:1fr 280px 1fr;gap:16px;align-items:center}
+.pa-col{display:flex;flex-direction:column;gap:10px}.pa-h{font-weight:700}
+.pa-core{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:24px 12px;border-radius:50%;aspect-ratio:1;justify-content:center;background:radial-gradient(circle,#fff3eb 0%,#fff 70%);border:2px dashed var(--o)}
+.pa-av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#ff7a45,#ffb347);color:#fff;font-size:28px;font-weight:700;display:grid;place-items:center}
+.pa-core small{color:var(--t3);font-size:12px}.pa-ring{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}.pa-ring span{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:2px 8px}
+.cmp{display:grid;grid-template-columns:1fr 1.4fr;gap:14px}.cmp .star{border:2px solid var(--gold);background:var(--goldl)!important}.chat{line-height:1.9}
+@media(max-width:900px){.road.r5{grid-template-columns:1fr 1fr}.pa,.cmp{grid-template-columns:1fr}.pa-core{aspect-ratio:auto;border-radius:16px}}
 </style>
 </head>
 <body>
@@ -316,15 +326,55 @@ th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vert
 
 <!-- 17 分期 -->
 <section>
-  <div class="kicker">10 · 分期交付</div>
-  <h2>先证明省力，再证明被记住，最后再变现</h2>
-  <div class="road">
-    <div class="card now"><span class="tag">MVP</span><h3>分层承接能减负吗</h3><p>入群识别、开播与内容问答、高优升级队列、基础看板</p><p class="note">自动解答率 ≥ 60% · 待办下降 ≥ 70%</p></div>
-    <div class="card"><span class="tag o">V1</span><h3>被记住能留存吗</h3><p>粉丝档案、分身记忆、签到等级、组队撮合</p><p class="note">新粉 7 日留存 +10%</p></div>
-    <div class="card"><span class="tag g">V2</span><h3>低打扰商业化</h3><p>商单管理、兴趣定向、流失预警、订阅</p><p class="note">转化可衡量 · 退群率不升</p></div>
-    <div class="card"><span class="tag gray">V3</span><h3>平台化复制</h3><p>配置模板化，覆盖其他游戏与 UP 主类型</p><p class="note">一个 UP 主一天内上线</p></div>
+  <div class="kicker">10 · 迭代路线</div>
+  <h2>从「群里的一个 Agent」到「每个粉丝专属的 Agent」</h2>
+  <div class="road r5">
+    <div class="card now"><span class="tag">MVP</span><h3>群 Agent · 减负</h3><p>入群识别、开播与内容问答、高优升级队列、基础看板</p><p class="note">自动解答率 ≥ 60% · 待办下降 ≥ 70%</p></div>
+    <div class="card"><span class="tag o">V1</span><h3>分层 Agent · 被记住</h3><p>粉丝档案、分身记忆、签到等级、组队撮合</p><p class="note">新粉 7 日留存 +10%</p></div>
+    <div class="card"><span class="tag g">V2</span><h3>商业 Agent · 低打扰变现</h3><p>商单管理、兴趣定向、流失预警、订阅</p><p class="note">转化可衡量 · 退群率不升</p></div>
+    <div class="card star"><span class="tag gold">V3</span><h3>Personal Agent · 专属</h3><p>每个粉丝一个私有分身：沉淀行为与和老张的互动史，私有化定制</p><p class="note">二次回访率 · 关系深度</p></div>
+    <div class="card"><span class="tag gray">V4</span><h3>平台化复制</h3><p>Personal Agent 能力模板化，覆盖更多游戏与 UP 主</p><p class="note">一个 UP 主一天内上线</p></div>
   </div>
+  <div class="evo"><span>一对多<small>群里所有人共用一个分身</small></span><i>→</i><span>分层<small>按层级 × 意图区别对待</small></span><i>→</i><span class="on">一对一<small>每个粉丝有自己的「老张」</small></span></div>
   <p class="note">验收数字为假设目标，需灰度验证。</p>
+</section>
+
+<!-- 17b Personal Agent -->
+<section>
+  <div class="kicker">V3 深挖 · Personal Agent</div>
+  <h2>每个粉丝，都有一个只属于他的「老张」</h2>
+  <p class="lead">同一个老张人设，但对每个粉丝，分身拥有<b>独立的记忆、独立的偏好、独立的关系进度</b>。粉丝越用，它越懂你；老张越用，越知道该把自己的时间给谁。</p>
+  <div class="pa">
+    <div class="pa-col">
+      <div class="pa-h">🧠 沉淀什么</div>
+      <div class="card"><span class="tag">行为操作</span><p>签到节奏、活跃时段、点过的视频、预约过的直播、组队偏好、点踩过的推荐</p></div>
+      <div class="card"><span class="tag o">游戏进度</span><p>在练的角色、卡过的关、通关记录、抽卡欧非史</p></div>
+      <div class="card"><span class="tag gold">和老张的互动史</span><p>老张亲自回过的话、被直播点名、建议被采纳、入群纪念日</p></div>
+    </div>
+    <div class="pa-core"><div class="pa-av">张</div><b>小雷的专属老张</b><small>私有记忆 · 私有偏好 · 关系进度</small>
+      <div class="pa-ring"><span>记得你</span><span>懂你节奏</span><span>替你争取老张</span></div></div>
+    <div class="pa-col">
+      <div class="pa-h">✨ 带来什么互动</div>
+      <div class="card"><span class="tag g">主动但不打扰</span><p>只在你常上线的时段提醒；你点踩过的类型不再出现</p></div>
+      <div class="card"><span class="tag">接得上的对话</span><p>"上次歪了那个角色，新圣遗物刚好适合它"</p></div>
+      <div class="card"><span class="tag gold">关系里程碑</span><p>入群 100 天、第 10 次被老张回复 → 分身提醒老张本人给你一句话</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17c 私有化定制 -->
+<section>
+  <div class="kicker">V3 深挖 · 私有化定制</div>
+  <h2>粉丝能定制，老张能定制，数据归粉丝</h2>
+  <div class="grid g3">
+    <div class="card"><span class="tag o">粉丝侧定制</span><ul><li>怎么称呼我（"旅行者" / 昵称）</li><li>提醒什么、什么时候提醒、多久一次</li><li>想聊的话题（只聊攻略 / 也聊日常）</li><li>商业推荐开关</li></ul></div>
+    <div class="card"><span class="tag">老张侧定制</span><ul><li>分身人设、语气、口头禅</li><li>哪些粉丝 / 哪些时刻必须升级本人</li><li>对舰长的专属话术与权益</li><li>不允许分身代说的话题</li></ul></div>
+    <div class="card"><span class="tag r">私有化边界</span><ul><li>每个粉丝的记忆<b>单独存储、互不共享</b></li><li>粉丝可查看、导出、一键清除</li><li>老张只看摘要和标签，看不到私聊原文</li><li>退群即冻结，30 天后删除</li></ul></div>
+  </div>
+  <div class="cmp">
+    <div class="card"><span class="tag gray">没有 Personal Agent</span><p class="chat"><b>粉丝：</b>又歪了…<br><b>分身：</b>抱抱，下次一定出！</p></div>
+    <div class="card star"><span class="tag gold">有 Personal Agent</span><p class="chat"><b>粉丝：</b>又歪了…<br><b>小雷的老张：</b>又是它？你上个月也歪了这个 😂 不过你火 C 正缺个副 C，它刚好能用，我上期视频 05:40 讲过。对了，下周三是你入群 100 天，我跟本人说了 🎉</p></div>
+  </div>
 </section>
 
 <!-- 18 风险 -->
