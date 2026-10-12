@@ -210,3 +210,14 @@ a.fan{color:var(--au-primary);cursor:pointer;text-decoration:none}a.fan:hover{te
 .stat3{display:grid;grid-template-columns:repeat(3,1fr);width:100%;margin-top:8px;font-size:11px;opacity:.95}.stat3 b{display:block;font-size:18px}
 .hsec.gold{border:1px solid #ffe08a;background:#fffdf3}
 .realq{font-size:13px;line-height:1.6;padding:8px;border-radius:8px;background:#fff;border-left:3px solid #ffb800}
+
+/* ===== 群聊简报 / 收入 ===== */
+.summary{display:grid;gap:12px}
+.sum-ai{background:linear-gradient(135deg,#e8f3ff,#fff);border:1px solid #bedaff;border-radius:8px;padding:14px 16px}.sum-ai p{margin-top:6px;line-height:1.8;color:var(--au-text-2)}
+b.ok,.ok{color:var(--au-success)}b.warn,.warn{color:var(--au-warning)}b.bad,.bad{color:var(--au-danger)}
+.focus{display:flex;gap:10px;padding:12px 0;border-bottom:1px dashed var(--line)}.focus p{color:var(--au-text-2);font-size:13px;margin:4px 0 8px;line-height:1.6}.focus .mini{margin-right:6px}
+.lvl{flex:none;height:22px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:600;line-height:22px;background:var(--au-fill-2);color:var(--au-text-2)}
+.focus.bad .lvl{background:#ffece8;color:var(--au-danger)}.focus.warn .lvl{background:var(--au-warning-light);color:var(--au-warning)}
+.gfilter{display:flex;gap:6px;margin-bottom:10px}.gfilter button{background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px}.gfilter button.on{border-color:var(--au-primary);color:var(--au-primary);background:var(--au-primary-light)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.dot.ok{background:var(--au-success)}.dot.warn{background:var(--au-warning)}.dot.bad{background:var(--au-danger)}
+#gtable tr[data-i]{cursor:pointer}#gtable tr[data-i]:hover td{background:var(--au-primary-light)}

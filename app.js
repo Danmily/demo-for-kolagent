@@ -334,3 +334,51 @@ function renderHome() {
 window.openHome = () => { if (!state.joined) { toast('先完成入群申请'); return; } renderHome(); $('#home').classList.add('on'); step('③粉丝记忆', '打开「我和老张」：关系沉淀对粉丝<b>可见、可删</b>'); };
 window.closeHome = () => $('#home').classList.remove('on');
 window.state = state;
+
+/* ---------- 群聊简报 ---------- */
+const GROUPS = [
+  ['核心粉丝 1 群', '核心', 'ok', 486, 1820, '讨论复刻抽不抽，分身已统一回复', 0],
+  ['核心粉丝 2 群', '核心', 'warn', 498, 210, '活跃骤降 38%，近 3 天无活动', 1],
+  ['舰长群', '付费', 'warn', 62, 340, '2 条建议等你亲自回复', 2],
+  ['攻略交流 1 群', '攻略', 'ok', 500, 1630, '深渊配队提问为主，自动解答 86%', 0],
+  ['攻略交流 2 群', '攻略', 'ok', 500, 1210, '秋日庆典活动攻略讨论', 0],
+  ['攻略交流 3 群', '攻略', 'warn', 500, 980, '有人抱怨"问题没人回"，3 条低置信待你确认', 3],
+  ['水友 7 群', '水友', 'bad', 500, 2240, '角色强度引战 40 分钟，3 人退群，已禁言 1 人', 0],
+  ['水友 1 群', '水友', 'ok', 500, 760, '日常水群 + 组队，撮合成功 12 次', 0],
+  ['二创投稿群', '二创', 'ok', 312, 420, '本周收稿 9 份，甜甜花新作获赞最多', 0],
+  ['开黑组队群', '组队', 'ok', 488, 1100, '周本组队高峰 21:00', 0]
+];
+for (let i = 2; i <= 6; i++) GROUPS.push([`水友 ${i} 群`, '水友', 'ok', 500, 300 + i * 40, '日常闲聊，无异常', 0]);
+for (let i = 1; i <= 8; i++) GROUPS.push([`新粉 ${i} 群`, '新粉', 'ok', 200 + i * 30, 90 + i * 15, '新人破冰 + 入门问答', 0]);
+GROUPS.length = 23;
+const ST = { ok: '正常', warn: '需关注', bad: '异常' };
+function drawGroups(f = 'all') {
+  $('#gtable').innerHTML = '<tr><th>群聊</th><th>类型</th><th>状态</th><th>人数</th><th>今日消息</th><th>分身摘要</th><th>待你处理</th></tr>' +
+    GROUPS.map((g, i) => [g, i]).filter(([g]) => f === 'all' || g[2] === f).sort((a, b) => 'bwo'.indexOf(a[0][2][0]) - 'bwo'.indexOf(b[0][2][0]))
+      .map(([g, i]) => `<tr data-i="${i}"><td><b>${g[0]}</b></td><td><span class="tag">${g[1]}</span></td><td><span class="dot ${g[2]}"></span>${ST[g[2]]}</td><td>${g[3]}</td><td>${g[4]}</td><td>${g[5]}</td><td>${g[6] ? `<b class="bad">${g[6]}</b>` : '—'}</td></tr>`).join('');
+}
+drawGroups();
+document.querySelectorAll('.gfilter button').forEach(b => b.onclick = () => { document.querySelectorAll('.gfilter button').forEach(x => x.classList.toggle('on', x === b)); drawGroups(b.dataset.g); });
+window.openGroup = i => {
+  const g = GROUPS[i];
+  $('#mcard').innerHTML = `<div class="mh"><div class="avatar big">${g[0][0]}</div><div><b>${g[0]}</b><small>${g[3]} 人 · 今日 ${g[4]} 条消息</small></div></div>
+    <div class="kv"><span>状态</span><b class="${g[2]}">${ST[g[2]]}</b></div>
+    <div class="kv"><span>分身摘要</span><b>${g[5]}</b></div>
+    <div class="kv"><span>热门话题</span><b>${g[2] === 'bad' ? '角色强度争论、退群' : '复刻抽不抽、深渊配队'}</b></div>
+    <div class="kv"><span>分身/助手已处理</span><b>${Math.round(g[4] * 0.96)} 条</b></div>
+    <div class="ops"><button class="mini" onclick="toast('已打开 ${g[0]}');$('#modal').classList.remove('on')">进入群聊</button><button class="mini ghost" onclick="toast('已让分身在 ${g[0]} 发一条问候');$('#modal').classList.remove('on')">让分身发言</button></div>`;
+  $('#modal').classList.add('on');
+};
+$('#gtable').onclick = e => { const tr = e.target.closest('tr[data-i]'); if (tr) openGroup(+tr.dataset.i); };
+
+const _draw2 = drawCharts;
+drawCharts = function () {
+  _draw2();
+  if (!window.Chart) return;
+  mk('c-income', { type: 'bar', data: { labels: ['7月', '8月', '9月', '10月'], datasets: [
+    { label: '商单', data: [28000, 31000, 36000, 42000], backgroundColor: C[0] },
+    { label: '订阅', data: [9800, 12600, 15000, 18640], backgroundColor: C[1] },
+    { label: '周边/二创', data: [2100, 2900, 3600, 4980], backgroundColor: C[2] },
+    { label: '直播打赏', data: [1800, 2100, 2400, 2800], backgroundColor: C[3] }] }, options: { ...opt, scales: { x: { stacked: true }, y: { stacked: true } } } });
+  mk('c-income-pie', { type: 'doughnut', data: { labels: ['商单', '订阅', '周边/二创', '直播打赏'], datasets: [{ data: [42000, 18640, 4980, 2800], backgroundColor: C }] }, options: opt });
+};
