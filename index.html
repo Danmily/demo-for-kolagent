@@ -23,14 +23,19 @@
       <div class="qq-head">
         <span class="back">‹</span>
         <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张的群助手（AI）在线</small></div>
-        <span class="more">≡</span>
+        <span class="more home-btn" onclick="openHome()" title="我的粉丝主页">👤</span>
       </div>
+      <div class="abar"><div class="avatar ai sm">张</div><div><b>老张的群助手</b><small>问攻略 · 查开播 · 组队，直接 @我</small></div><button onclick="openHome()">我的主页 ›</button></div>
       <div class="pinned" id="pinned">📌 群公告：今晚 20:00 直播「新版本深渊满星配队」，点我预约 ›</div>
       <div class="chat" id="chat"></div>
       <div class="chips" id="chips"></div>
       <div class="qq-input">
         <input id="msg" placeholder="@群助手 说点什么…">
         <button id="send">发送</button>
+      </div>
+      <div class="home" id="home">
+        <div class="hhead"><span onclick="closeHome()">‹ 返回群聊</span><b>我的粉丝主页</b><span></span></div>
+        <div class="hbody" id="hbody"></div>
       </div>
       <div class="join" id="join">
         <div class="jhead">申请加入群聊</div>

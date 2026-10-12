@@ -148,7 +148,7 @@ const S = {
     step('②分层承接', '层级=<b>舰长</b> × 意图=<b>提建议</b> → 命中升级规则，进入 UP 主<b>高优待回复队列</b>');
     reply(() => ai('好思路阿月！已经原话转给老张本人啦，他上线会亲自回你 🔺'));
   },
-  profile() {
+  profileOld() {
     me('我的档案');
     step('③粉丝记忆', '粉丝可查看助手记住了什么，并一键清除');
     reply(() => ai(`<div class="card-msg"><div class="cbody"><b>🗂 助手记住的关于你</b><span class="meta">层级：${$('#p-level').textContent}<br>来意：${state.intent}<br>群等级：${state.signed ? 'Lv.3 常驻观众' : 'Lv.2'}<br>${state.mem.length ? '摘要：' + state.mem.join('；') : '摘要：暂无'}</span><button class="btn ghost" style="background:#f53f3f" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';toast('已清除互动摘要');step('③粉丝记忆','粉丝主动清除摘要 → 档案仅保留层级与来意')">一键清除记忆</button></div><div class="src">只记录与群互动相关的摘要 · UP 主看不到私聊原文</div></div>`, true));
@@ -158,6 +158,11 @@ const S = {
     step('⑤KOL洞察', '活跃度下降 → 生成<b>流失预警</b>；助手发一次轻量关怀（不推商业内容）');
     ai('小雷，好久没见你啦～这周老张出了新深渊配队，还有你在练的火系主C新圣遗物思路，有空来看看？');
     step('⑤KOL洞察', 'KOL 后台「流失预警」名单 +1，可选择由老张本人互动');
+  },
+  profile() {
+    me('我的档案');
+    step('③粉丝记忆', '跳转<b>粉丝主页</b>：档案、成长、权益集中沉淀，聊天只负责问答');
+    reply(() => { ai(`<div class="card-msg"><div class="cbody"><b>🗂 你的粉丝主页已更新</b><span class="meta">等级、记忆、签到、权益都在这里</span><button class="btn" onclick="openHome()">打开我的主页 ›</button></div></div>`, true); setTimeout(openHome, 500); });
   },
   memory() {
     me('你还记得我吗');
@@ -170,7 +175,7 @@ window.book = btn => { state.booked = true; btn.classList.add('done'); btn.textC
 window.subscribe = () => { state.sub = '攻略会员 ¥12/月'; $('#p-sub').textContent = state.sub; $('#p-level').textContent = '攻略会员 · 粉丝牌 6 级'; step('⑤商业化', '订阅成功 → 层级升级，解锁配队诊断'); toast('已开通攻略会员（Demo）'); reply(() => ai('欢迎成为攻略会员！🎉 现在就可以用配队诊断啦～')); };
 window.S = S; window.toast = toast; window.step = step;
 
-const chips = [['🔴 今晚开播吗', 'live'], ['📖 深渊配队', 'guide'], ['▶ 最新视频', 'video'], ['✅ 签到', 'sign'], ['🎁 抽奖', 'draw'], ['🤝 组队', 'team'], ['📢 版本活动', 'game'], ['💬 对老张说', 'say'], ['😭 又歪了', 'emo'], ['📱 手机卡', 'gear'], ['⭐ 订阅会员', 'sub'], ['🗂 我的档案', 'profile'], ['👑 舰长发言', 'captain'], ['🚫 有人发广告', 'ad']];
+const chips = [['🔴 今晚开播吗', 'live'], ['📖 深渊配队', 'guide'], ['▶ 最新视频', 'video'], ['✅ 签到', 'sign'], ['🎁 抽奖', 'draw'], ['🤝 组队', 'team'], ['📢 版本活动', 'game'], ['💬 对老张说', 'say'], ['😭 又歪了', 'emo'], ['📱 手机卡', 'gear'], ['⭐ 订阅会员', 'sub'], ['👤 我的主页', 'profile'], ['👑 舰长发言', 'captain'], ['🚫 有人发广告', 'ad']];
 $('#chips').innerHTML = chips.map(([t, k]) => `<button data-k="${k}">${t}</button>`).join('');
 $('#chips').onclick = e => { const k = e.target.dataset.k; if (!k) return; if (!state.joined) { toast('先完成入群申请'); return; } S[k](); };
 $('#pinned').onclick = () => S.live();
@@ -212,7 +217,7 @@ function joinGroup() {
   step('①入群识别', 'KOL 后台：新增来源「深渊视频」+1');
   sys('小雷 加入了群聊');
   const tip = { '问攻略': '有卡关的地方直接 @我，老张的 128 期视频我都学过啦', '找队友': '想组队直接说「组队+玩法」，我帮你找同时段在线的群友', '追更UP主': '开播和更新我会私聊提醒你，不 @全体打扰', '随便看看': '先逛逛，底下快捷按钮随便点～' }[state.intent];
-  setTimeout(() => ai(`欢迎小雷～🎉 ${auth ? '看你最近在看<b>深渊配队</b>，' : ''}${tip}！<br>点下面的快捷按钮就能开始 👇`), 400);
+  setTimeout(() => { ai(`欢迎小雷～🎉 ${auth ? '看你最近在看<b>深渊配队</b>，' : ''}${tip}！`); ai(`<div class="card-msg"><div class="cbody"><b>👤 已为你建立粉丝主页</b><span class="meta">等级 · 签到 · 助手记住的事 · 会员权益，随时可查可删</span><button class="btn" onclick="openHome()">查看我的主页 ›</button></div></div>`, true); }, 400);
   markJ(0);
 }
 $('#jbtn').onclick = joinGroup;
@@ -304,3 +309,30 @@ drawCharts = function () {
     { label: '有效互动占比 %', data: [22, 24, 23, 29, 33, 36, 39, 41], borderColor: C[0], backgroundColor: 'rgba(22,93,255,.08)', fill: true, tension: .3 },
     { label: 'Agent 上线', data: [null, null, null, 29, null, null, null, null], borderColor: C[1], pointRadius: 6, showLine: false }] }, options: opt });
 };
+
+/* ---------- 粉丝主页 ---------- */
+function renderHome() {
+  const auth = $('#auth').checked, sub = state.sub !== '未订阅';
+  const days = ['一','二','三','四','五','六','日'].map((d, i) => `<span class="${i < 6 ? 'ok' : (state.signed ? 'ok' : 'today')}">${d}</span>`).join('');
+  const ben = [['💬','群内问答',1],['🔔','开播提醒',1],['✅','签到抽奖',1],['🤝','组队撮合',1],['🩺','配队诊断',sub],['📚','会员攻略',sub],['🎯','抽奖双倍',sub],['🎙','老张亲回',0]];
+  $('#hbody').innerHTML = `
+    <div class="hero"><div class="avatar big">雷</div><div><b>小雷</b> ${sub ? '<span class="tag gold" style="font-size:10px">攻略会员</span>' : ''}
+      <small>${auth ? 'B站粉丝牌 6 级 · 关注 12 天' : '未授权 B 站信息'} · 入群 ${state.joined ? '今天' : '—'}</small>
+      <small>群等级 Lv.${state.signed ? 3 : 2}「${state.signed ? '常驻观众' : '新晋旅行者'}」</small><div class="lvbar"><i style="width:${state.signed ? 35 : 80}%"></i></div></div></div>
+    <div class="hsec"><h5>📌 我的标签 <small>来自入群选择与提问</small></h5><div class="tags"><span>来意：${state.intent}</span>${auth ? '<span>来源：深渊配队视频</span>' : ''}${state.mem.some(m => m.includes('火系')) ? '<span>在练：火系主C</span>' : ''}${state.mem.some(m => m.includes('通关')) ? '<span>深渊12层 ✓</span>' : ''}<span>活跃：周末晚上</span></div></div>
+    <div class="hsec"><h5>✅ 签到 <small>连续 ${state.signed ? 7 : 6} 天 · 满 7 天解锁抽奖</small></h5><div class="sign-days">${days}</div>
+      <button class="hbtn" onclick="closeHome();S.${state.signed ? 'draw' : 'sign'}()">${state.signed ? '去抽奖' : '今日签到'}</button></div>
+    <div class="hsec"><h5>🧠 助手记住的事 <small>用于下次接着聊</small></h5>
+      <div class="tl">${state.mem.length ? state.mem.map(m => { const [d, ...r] = m.split(' '); return `<div><i>${d}</i>${r.join(' ')}</div>`; }).join('') : '<div>暂无记录</div>'}</div>
+      <button class="hbtn ghost" onclick="state.mem=[];$('#p-mem').textContent='（已清除）';renderHome();toast('已清除互动记忆');step('③粉丝记忆','粉丝在主页清除记忆 → 仅保留层级与来意')">清除记忆</button>
+      <p class="privacy">只记录与群互动相关的摘要；UP 主只看到标签和摘要，看不到私聊原文。</p></div>
+    <div class="hsec"><h5>🔴 我的订阅 <small>${state.booked ? '已预约 1 场' : '暂无预约'}</small></h5>
+      <div class="kv"><span>今晚 20:00 深渊满星配队</span><b>${state.booked ? '✓ 已预约' : `<a href="javascript:closeHome();S.live()">去预约</a>`}</b></div>
+      <div class="kv"><span>版本更新提醒</span><b>已开启</b></div></div>
+    <div class="hsec"><h5>⭐ 我的权益 <small>${sub ? state.sub : '旅行者（免费）'}</small></h5>
+      <div class="grid-ben">${ben.map(([i, t, on]) => `<div class="${on ? '' : 'lock'}">${i}<br>${t}</div>`).join('')}</div>
+      ${sub ? '' : '<button class="hbtn" onclick="closeHome();S.sub()">升级会员 · ¥12/月</button>'}</div>`;
+}
+window.openHome = () => { if (!state.joined) { toast('先完成入群申请'); return; } renderHome(); $('#home').classList.add('on'); step('③粉丝记忆', '打开粉丝主页 · 档案对粉丝<b>可见、可删</b>'); };
+window.closeHome = () => $('#home').classList.remove('on');
+window.state = state;
