@@ -22,31 +22,48 @@
     <div class="phone">
       <div class="qq-head">
         <span class="back">‹</span>
-        <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张的AI分身在线</small></div>
+        <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张的群助手（AI）在线</small></div>
         <span class="more">≡</span>
       </div>
       <div class="pinned" id="pinned">📌 群公告：今晚 20:00 直播「新版本深渊满星配队」，点我预约 ›</div>
       <div class="chat" id="chat"></div>
       <div class="chips" id="chips"></div>
       <div class="qq-input">
-        <input id="msg" placeholder="@老张AI分身 说点什么…">
+        <input id="msg" placeholder="@群助手 说点什么…">
         <button id="send">发送</button>
+      </div>
+      <div class="join" id="join">
+        <div class="jhead">申请加入群聊</div>
+        <div class="jgroup"><div class="avatar big">张</div><div><b>提瓦特老张の攻略小屋</b><small>核心粉丝群 · 486/500</small></div></div>
+        <div class="jsec"><b>① B 站身份授权 <i>可选</i></b>
+          <label class="auth"><input type="checkbox" id="auth" checked> 授权读取粉丝牌等级、关注时长、近期观看（仅用于群内服务）</label>
+          <div class="authinfo" id="authinfo">已读取：粉丝牌 <b>6 级</b> · 关注 <b>12 天</b> · 近期看过《深渊配队》×3</div></div>
+        <div class="jsec"><b>② 你进群最想做什么？</b>
+          <div class="opts" id="opts"><span class="on" data-v="问攻略">📖 问攻略</span><span data-v="找队友">🤝 找队友</span><span data-v="追更UP主">🔔 追更 UP 主</span><span data-v="随便看看">👀 随便看看</span></div></div>
+        <div class="jsec"><b>③ 入群口令</b><input value="旅行者冲冲冲" readonly class="jinput"></div>
+        <div class="jrec" id="jrec">✅ 匹配度高：推荐加入<b>核心粉丝群</b></div>
+        <button class="jbtn" id="jbtn">申请入群</button>
+        <p class="jnote">筛选结果只用于推荐合适的群，不额外提高门槛</p>
       </div>
       <div class="qq-tools"><span>🎤</span><span>🖼️</span><span>📷</span><span>🧧</span><span>😊</span><span>⊕</span></div>
     </div>
   </section>
 
   <aside class="explain">
+    <h3>演示剧本 · 一位粉丝的完整旅程</h3>
+    <div class="journey" id="journey">
+      <button data-j="0"><i>①</i>入群</button><button data-j="1"><i>②</i>首次提问</button><button data-j="2"><i>③</i>三天后</button><button data-j="3"><i>④</i>第二周</button><button data-j="4"><i>⑤</i>一个月后</button><button data-j="5"><i>⑤</i>开始沉默</button>
+    </div>
     <h3>Agent 在后台做了什么</h3>
     <p class="hint">左侧每次交互，这里实时展示 Agent 的识别与路由，对应 PRD 五类能力。</p>
     <div class="card profile">
       <div class="ph">粉丝档案 · 小雷</div>
       <div class="kv"><span>层级</span><b id="p-level">普通粉丝 · 粉丝牌 6 级</b></div>
-      <div class="kv"><span>来意</span><b>攻略需求（入群时选择）</b></div>
-      <div class="kv"><span>来源</span><b>《深渊配队》系列视频</b></div>
+      <div class="kv"><span>来意</span><b id="p-intent">—</b></div>
+      <div class="kv"><span>来源</span><b id="p-src">—</b></div>
       <div class="kv"><span>订阅</span><b id="p-sub">未订阅</b></div>
-      <div class="kv"><span>签到</span><b id="p-sign">连续 6 天</b></div>
-      <div class="kv"><span>记忆摘要</span><b id="p-mem">10.09 问过深渊 12 层下半配队，在练「火系主C」</b></div>
+      <div class="kv"><span>签到</span><b id="p-sign">—</b></div>
+      <div class="kv"><span>记忆摘要</span><b id="p-mem">（入群后开始记录）</b></div>
     </div>
     <div class="log" id="log"></div>
   </aside>
@@ -64,6 +81,7 @@
     <a data-tab="game">📢 游戏更新</a>
     <a data-tab="biz">💼 商单管理</a>
     <a data-tab="sub">⭐ 订阅会员</a>
+    <a data-tab="cfg">⚙️ 配置中心</a>
   </aside>
   <section class="board">
 
@@ -80,6 +98,17 @@
       <div class="grid2">
         <div class="panel"><h4>粉丝与群人数趋势</h4><canvas id="c-trend"></canvas></div>
         <div class="panel"><h4>Agent 处理消息分布</h4><canvas id="c-route"></canvas></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h4>北极星 · 周有效互动粉丝占比 <small>一周内与 Agent / UP 主 / 群友有效互动的去重粉丝 ÷ 群总人数</small></h4><canvas id="c-north"></canvas></div>
+        <div class="panel"><h4>MVP 验收进度</h4>
+          <div class="prog"><span>自动解答率</span><div><i style="width:78%"></i><em style="left:60%"></em></div><b>78% / 目标 60%</b></div>
+          <div class="prog"><span>UP 主待办下降</span><div><i style="width:92%"></i><em style="left:70%"></em></div><b>92% / 目标 70%</b></div>
+          <div class="prog"><span>入群来意填写率</span><div><i style="width:86%"></i><em style="left:80%"></em></div><b>86% / 目标 80%</b></div>
+          <div class="prog warn"><span>新粉 7 日留存提升</span><div><i style="width:60%"></i><em style="left:100%"></em></div><b>+6% / V1 目标 +10%</b></div>
+          <div class="prog"><span>Agent 错误回答率 <small>护栏</small></span><div><i style="width:15%;background:var(--au-success)"></i><em style="left:25%"></em></div><b>1.5% / 上限 2.5%</b></div>
+          <p class="hint">竖线为目标值；数据为演示示意</p>
+        </div>
       </div>
       <div class="panel"><h4>今日洞察</h4>
         <ul class="insight">
@@ -99,9 +128,9 @@
       </div>
       <div class="panel"><h4>流失预警 <small>核心粉 / 舰长，活跃度下降</small></h4>
         <table><tr><th>粉丝</th><th>层级</th><th>上次互动</th><th>记忆摘要</th><th>建议动作</th><th></th></tr>
-        <tr><td>阿月</td><td><span class="tag gold">舰长</span></td><td>11 天前</td><td>常提选题建议，喜欢剧情向</td><td>让分身私信问候 + 邀请参与选题投票</td><td><button class="mini" onclick="toast('已让分身向阿月发送问候')">执行</button></td></tr>
-        <tr><td>北斗船员</td><td><span class="tag">核心粉</span></td><td>10 天前</td><td>水友赛常客，最近组队失败 2 次</td><td>优先匹配周末组队</td><td><button class="mini" onclick="toast('已加入周末组队优先池')">执行</button></td></tr>
-        <tr><td>甜甜花</td><td><span class="tag">核心粉</span></td><td>14 天前</td><td>二创画手，投稿 3 次</td><td>精选其二创到群公告</td><td><button class="mini" onclick="toast('已推荐至群精华')">执行</button></td></tr>
+        <tr><td><a class="fan" data-f="阿月">阿月</a></td><td><span class="tag gold">舰长</span></td><td>11 天前</td><td>常提选题建议，喜欢剧情向</td><td>让分身私信问候 + 邀请参与选题投票</td><td><button class="mini" onclick="toast('已让分身向阿月发送问候')">执行</button></td></tr>
+        <tr><td><a class="fan" data-f="北斗船员">北斗船员</a></td><td><span class="tag">核心粉</span></td><td>10 天前</td><td>水友赛常客，最近组队失败 2 次</td><td>优先匹配周末组队</td><td><button class="mini" onclick="toast('已加入周末组队优先池')">执行</button></td></tr>
+        <tr><td><a class="fan" data-f="甜甜花">甜甜花</a></td><td><span class="tag">核心粉</span></td><td>14 天前</td><td>二创画手，投稿 3 次</td><td>精选其二创到群公告</td><td><button class="mini" onclick="toast('已推荐至群精华')">执行</button></td></tr>
         </table>
       </div>
     </div>
@@ -123,12 +152,14 @@
       <div class="grid2">
         <div class="panel"><h4>群日活 & 发言数</h4><canvas id="c-dau"></canvas></div>
         <div class="panel"><h4>本周热门问题</h4>
-          <ol class="rank"><li>新角色抽不抽 <i>146</i></li><li>深渊 12 层下半配队 <i>98</i></li><li>今晚开不开播 <i>87</i></li><li>圣遗物副本怎么刷 <i>54</i></li><li>周本组队 <i>41</i></li></ol>
+          <ol class="rank"><li>新角色抽不抽 <i>146</i></li><li>深渊 12 层下半配队 <i>98</i></li><li>今晚开不开播 <i>87</i></li><li>圣遗物副本怎么刷 <i>54</i></li><li>周本组队 <i>41</i></li><li>秋日庆典活动怎么打 <i>38</i></li><li>零氪火系队配置 <i>33</i></li><li>剧情解析什么时候出 <i>32</i></li><li>手机玩卡不卡 <i>21</i></li><li>二创投稿发哪里 <i>17</i></li></ol>
+          <button class="mini" onclick="toast('已把 Top3 加入下期选题池')">一键加入选题池</button>
         </div>
       </div>
-      <div class="grid3">
+      <div class="grid2">
         <div class="panel"><h4>情绪分布</h4><canvas id="c-senti"></canvas></div>
         <div class="panel"><h4>群秩序</h4><div class="kv"><span>拦截广告</span><b>23</b></div><div class="kv"><span>引战警告</span><b>4</b></div><div class="kv"><span>新人破冰</span><b>213</b></div><div class="kv"><span>组队撮合成功</span><b>67</b></div></div>
+        <div class="panel"><h4>活动效果</h4><table><tr><th>活动</th><th>参与</th><th>活动前后日活</th></tr><tr><td>周签到抽奖</td><td>412</td><td class="up">+18%</td></tr><tr><td>二创征集</td><td>37 稿</td><td class="up">+9%</td></tr><tr><td>水友赛</td><td>64</td><td class="up">+23%</td></tr></table></div>
         <div class="panel"><h4>粉丝想对你说 <small>分身汇总</small></h4><p class="quote">“希望多出剧情解析”×32<br>“直播时间能固定吗”×18<br>“想要老张同款周边”×15</p></div>
       </div>
     </div>
@@ -137,9 +168,9 @@
       <h2>待办与数字分身</h2>
       <div class="grid2">
         <div class="panel"><h4>需你亲自处理 <small>已从 1,240 条消息中筛出</small></h4>
-          <div class="todo"><span class="tag gold">舰长</span> <b>阿月</b>：老张，上期视频那个配队我想到个改进…<div class="ops"><button class="mini" onclick="toast('已用分身语气回复：好思路！下期视频会提到你～')">一键分身回复</button><button class="mini ghost" onclick="toast('已打开私聊')">亲自回复</button></div></div>
+          <div class="todo"><span class="tag gold">舰长</span> <b><a class="fan" data-f="阿月">阿月</a></b>：老张，上期视频那个配队我想到个改进…<div class="ops"><button class="mini" onclick="toast('已用分身语气回复：好思路！下期视频会提到你～')">一键分身回复</button><button class="mini ghost" onclick="toast('已打开私聊')">亲自回复</button></div></div>
           <div class="todo"><span class="tag blue">商务</span> <b>某外设品牌</b>：想约 11 月直播口播…<div class="ops"><button class="mini" onclick="go('biz')">去商单管理</button></div></div>
-          <div class="todo"><span class="tag">未能回答</span> <b>小雷</b>：老张会做 PV 解析吗？<div class="ops"><button class="mini" onclick="toast('已回复并加入选题池')">一键回复</button></div></div>
+          <div class="todo"><span class="tag">未能回答</span> <b><a class="fan" data-f="小雷">小雷</a></b>：老张会做 PV 解析吗？<div class="ops"><button class="mini" onclick="toast('已回复并加入选题池')">一键回复</button></div></div>
         </div>
         <div class="panel"><h4>数字分身设置</h4>
           <div class="kv"><span>人设语气</span><b>热情、爱玩梗、称呼粉丝"旅行者"</b></div>
@@ -193,9 +224,38 @@
       </div>
     </div>
 
+    <div class="tab" id="t-cfg">
+      <h2>配置中心 <small>入群规则 · 分层承接 · 人设与内容库</small></h2>
+      <div class="grid2">
+        <div class="panel"><h4>入群规则</h4>
+          <div class="kv"><span>入群口令</span><b>旅行者冲冲冲</b></div>
+          <div class="kv"><span>来意选择题</span><b>问攻略 / 找队友 / 追更 / 随便看看</b></div>
+          <div class="kv"><span>B 站授权</span><b>可选（不授权仍可入群）</b></div>
+          <table><tr><th>群</th><th>推荐门槛</th><th>匹配类型</th></tr>
+          <tr><td>核心粉丝群</td><td>粉丝牌 ≥ 3 级 或 来意≠随便看看</td><td><span class="tag blue">强匹配</span></td></tr>
+          <tr><td>水友群</td><td>开放</td><td><span class="tag">弱匹配</span></td></tr>
+          <tr><td>舰长群</td><td>舰长身份 / 冒险家会员</td><td><span class="tag gold">付费匹配</span></td></tr></table>
+        </div>
+        <div class="panel"><h4>人设与内容库</h4>
+          <div class="kv"><span>身份</span><b>老张的群助手（AI），不冒充本人</b></div>
+          <div class="kv"><span>语气</span><b>热情、爱玩梗、称呼粉丝"旅行者"</b></div>
+          <div class="kv"><span>知识优先级</span><b>① 老张视频/动态 ② 通用游戏知识库</b></div>
+          <div class="kv"><span>内容库</span><b>128 期视频文稿 · 42 条动态 · 更新于 10.12</b></div>
+          <div class="kv"><span>低置信处理</span><b>不编造，转入 UP 主待办</b></div>
+          <div class="kv"><span>风控</span><b>高置信自动撤回 · 低置信仅提醒管理员</b></div>
+          <button class="mini" onclick="toast('已同步最新 2 期视频到内容库')">同步最新视频</button>
+        </div>
+      </div>
+      <div class="panel"><h4>分层承接矩阵 <small>粉丝层级 × 消息意图 → 谁来回应（点击单元格切换）</small></h4>
+        <table class="matrix" id="matrix"></table>
+        <p class="hint">🤖 助手直接答 · 📌 汇总给 UP 主 · 🔺 升级到本人高优队列 · 💼 转商务队列</p>
+      </div>
+    </div>
+
   </section>
 </main>
 
+<div class="modal" id="modal" onclick="if(event.target===this)this.classList.remove('on')"><div class="mcard" id="mcard"></div></div>
 <div class="toast" id="toast"></div>
 <script src="app.js"></script>
 </body>

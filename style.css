@@ -128,3 +128,39 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 #kol .cal .open{background:var(--au-success-light);border-color:#aff0b5}
 .explain .card,.step{border:1px solid var(--au-border);border-radius:var(--au-radius-lg)}
 .step{border-left:3px solid var(--au-primary)}.step b{color:var(--au-primary)}
+
+/* ===== 入群申请页 ===== */
+.phone{position:relative}
+.join{position:absolute;inset:0;background:var(--au-fill-2);z-index:3;padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;transition:.35s}
+.join.gone{transform:translateY(100%);opacity:0;pointer-events:none}
+.jhead{text-align:center;font-weight:600;padding:4px 0 6px}
+.jgroup{display:flex;gap:10px;align-items:center;background:#fff;border-radius:10px;padding:12px}.jgroup small{display:block;color:var(--sub);font-size:12px}
+.jsec{background:#fff;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px}.jsec b i{font-style:normal;font-weight:400;color:var(--sub);font-size:12px}
+.auth{font-size:12px;display:flex;gap:6px;color:var(--au-text-2);line-height:1.5}
+.authinfo{font-size:12px;background:var(--au-primary-light);color:var(--au-primary);padding:6px 8px;border-radius:6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}.opts span{border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center;font-size:13px;cursor:pointer}
+.opts span.on{border-color:var(--qq);background:#e8f6ff;color:var(--qq)}
+.jinput{border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:inherit;background:var(--au-fill-2)}
+.jrec{font-size:12px;padding:8px 10px;border-radius:8px;background:var(--au-success-light);color:var(--au-success)}.jrec.alt{background:var(--au-warning-light);color:var(--au-warning)}
+.jbtn{background:var(--qq);color:#fff;border-radius:10px;padding:11px;font-size:15px}
+.jnote{text-align:center;font-size:11px;color:var(--sub)}
+/* 剧本 */
+.journey{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.journey button{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:12px;color:var(--au-text-2)}
+.journey button i{font-style:normal;color:var(--au-primary);margin-right:3px}
+.journey button.on{border-color:var(--au-primary);background:var(--au-primary-light);color:var(--au-primary)}
+.journey button.done{color:var(--au-success);border-color:#aff0b5}
+.recall{opacity:.55;text-decoration:line-through}
+.adtag{display:inline-block;font-size:10px;border:1px solid var(--au-warning);color:var(--au-warning);border-radius:3px;padding:0 3px;margin-right:4px}
+/* KOL 新增 */
+.prog{display:grid;grid-template-columns:120px 1fr 150px;align-items:center;gap:10px;padding:8px 0;font-size:13px}
+.prog>div{height:8px;background:var(--au-fill-2);border-radius:4px;position:relative}
+.prog i{position:absolute;inset:0 auto 0 0;background:var(--au-primary);border-radius:4px}
+.prog em{position:absolute;top:-3px;width:2px;height:14px;background:var(--au-text-1)}
+.prog.warn i{background:var(--au-warning)}.prog b{font-weight:500;color:var(--au-text-2);font-size:12px}
+a.fan{color:var(--au-primary);cursor:pointer;text-decoration:none}a.fan:hover{text-decoration:underline}
+.matrix td{cursor:pointer;text-align:center}.matrix td:first-child{text-align:left;cursor:default;font-weight:500}.matrix td:not(:first-child):hover{background:var(--au-primary-light)}
+.modal{position:fixed;inset:0;background:#0006;display:none;place-items:center;z-index:8;padding:16px}.modal.on{display:grid}
+.mcard{background:#fff;border-radius:12px;width:420px;max-width:100%;padding:20px;display:flex;flex-direction:column;gap:8px}
+.mcard .mh{display:flex;gap:12px;align-items:center;margin-bottom:6px}.mcard .mh small{display:block;color:var(--sub)}
+@media(max-width:760px){.prog{grid-template-columns:1fr;gap:4px}}
