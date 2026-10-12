@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KOL 粉丝群 Agent Demo</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">🐧</span> 粉丝群智能运营 Agent <small>Demo · 以原神攻略 UP 主「提瓦特老张」为例</small></div>
+  <nav class="switch">
+    <button class="on" data-view="fan">粉丝端 · QQ 群聊</button>
+    <button data-view="kol">KOL 端 · 运营后台</button>
+  </nav>
+</header>
+
+<!-- ================= 粉丝端 ================= -->
+<main id="fan" class="view on">
+  <section class="phone-wrap">
+    <div class="phone">
+      <div class="qq-head">
+        <span class="back">‹</span>
+        <div class="title"><b>提瓦特老张の攻略小屋</b><small>486人 · 老张的AI分身在线</small></div>
+        <span class="more">≡</span>
+      </div>
+      <div class="pinned" id="pinned">📌 群公告：今晚 20:00 直播「新版本深渊满星配队」，点我预约 ›</div>
+      <div class="chat" id="chat"></div>
+      <div class="chips" id="chips"></div>
+      <div class="qq-input">
+        <input id="msg" placeholder="@老张AI分身 说点什么…">
+        <button id="send">发送</button>
+      </div>
+      <div class="qq-tools"><span>🎤</span><span>🖼️</span><span>📷</span><span>🧧</span><span>😊</span><span>⊕</span></div>
+    </div>
+  </section>
+
+  <aside class="explain">
+    <h3>Agent 在后台做了什么</h3>
+    <p class="hint">左侧每次交互，这里实时展示 Agent 的识别与路由，对应 PRD 五类能力。</p>
+    <div class="card profile">
+      <div class="ph">粉丝档案 · 小雷</div>
+      <div class="kv"><span>层级</span><b id="p-level">普通粉丝 · 粉丝牌 6 级</b></div>
+      <div class="kv"><span>来意</span><b>攻略需求（入群时选择）</b></div>
+      <div class="kv"><span>来源</span><b>《深渊配队》系列视频</b></div>
+      <div class="kv"><span>订阅</span><b id="p-sub">未订阅</b></div>
+      <div class="kv"><span>签到</span><b id="p-sign">连续 6 天</b></div>
+      <div class="kv"><span>记忆摘要</span><b id="p-mem">10.09 问过深渊 12 层下半配队，在练「火系主C」</b></div>
+    </div>
+    <div class="log" id="log"></div>
+  </aside>
+</main>
+
+<!-- ================= KOL 端 ================= -->
+<main id="kol" class="view">
+  <aside class="side">
+    <div class="me"><div class="avatar big">张</div><div><b>提瓦特老张</b><small>B站 52.3万粉 · 3 个 QQ 群</small></div></div>
+    <a class="on" data-tab="overview">📊 数据总览</a>
+    <a data-tab="fans">👥 粉丝分析</a>
+    <a data-tab="video">🎬 视频数据</a>
+    <a data-tab="group">💬 群聊反馈</a>
+    <a data-tab="todo">📥 待办与分身 <em>3</em></a>
+    <a data-tab="game">📢 游戏更新</a>
+    <a data-tab="biz">💼 商单管理</a>
+    <a data-tab="sub">⭐ 订阅会员</a>
+  </aside>
+  <section class="board">
+
+    <div class="tab on" id="t-overview">
+      <h2>数据总览 <small>近 30 天 · 截至 10.12</small></h2>
+      <div class="kpis">
+        <div class="kpi"><span>B站粉丝</span><b>52.3万</b><i class="up">+1.8万</i></div>
+        <div class="kpi"><span>群总人数</span><b>1,482</b><i class="up">+213</i></div>
+        <div class="kpi"><span>周有效互动粉丝占比</span><b>41%</b><i class="up">+12pt</i></div>
+        <div class="kpi"><span>Agent 自动解答率</span><b>78%</b><i class="up">+6pt</i></div>
+        <div class="kpi"><span>你需亲自处理</span><b>3 条</b><i class="down">-92%</i></div>
+        <div class="kpi"><span>订阅收入（月）</span><b>¥18,640</b><i class="up">+24%</i></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h4>粉丝与群人数趋势</h4><canvas id="c-trend"></canvas></div>
+        <div class="panel"><h4>Agent 处理消息分布</h4><canvas id="c-route"></canvas></div>
+      </div>
+      <div class="panel"><h4>今日洞察</h4>
+        <ul class="insight">
+          <li>🔥 「新角色抽不抽」本周被问 <b>146</b> 次，建议做一期抽卡建议视频</li>
+          <li>⚠️ <b>7 位</b>舰长/核心粉近 10 天未发言，已进入流失预警（见粉丝分析）</li>
+          <li>📈 上期《深渊满星配队》带来 <b>89</b> 位新入群粉丝，是本月最强拉新视频</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab" id="t-fans">
+      <h2>粉丝分析</h2>
+      <div class="grid3">
+        <div class="panel"><h4>粉丝层级</h4><canvas id="c-tier"></canvas></div>
+        <div class="panel"><h4>入群来意</h4><canvas id="c-intent"></canvas></div>
+        <div class="panel"><h4>入群来源视频 Top5</h4><canvas id="c-src"></canvas></div>
+      </div>
+      <div class="panel"><h4>流失预警 <small>核心粉 / 舰长，活跃度下降</small></h4>
+        <table><tr><th>粉丝</th><th>层级</th><th>上次互动</th><th>记忆摘要</th><th>建议动作</th><th></th></tr>
+        <tr><td>阿月</td><td><span class="tag gold">舰长</span></td><td>11 天前</td><td>常提选题建议，喜欢剧情向</td><td>让分身私信问候 + 邀请参与选题投票</td><td><button class="mini" onclick="toast('已让分身向阿月发送问候')">执行</button></td></tr>
+        <tr><td>北斗船员</td><td><span class="tag">核心粉</span></td><td>10 天前</td><td>水友赛常客，最近组队失败 2 次</td><td>优先匹配周末组队</td><td><button class="mini" onclick="toast('已加入周末组队优先池')">执行</button></td></tr>
+        <tr><td>甜甜花</td><td><span class="tag">核心粉</span></td><td>14 天前</td><td>二创画手，投稿 3 次</td><td>精选其二创到群公告</td><td><button class="mini" onclick="toast('已推荐至群精华')">执行</button></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab" id="t-video">
+      <h2>视频数据</h2>
+      <div class="panel"><h4>近 8 期视频播放 & 带来入群数</h4><canvas id="c-video"></canvas></div>
+      <div class="panel"><table>
+        <tr><th>视频</th><th>播放</th><th>互动率</th><th>带来入群</th><th>群内讨论</th></tr>
+        <tr><td>新版本深渊满星配队</td><td>86.2万</td><td>9.4%</td><td>89</td><td>412 条</td></tr>
+        <tr><td>零氪也能用的火系队</td><td>61.5万</td><td>8.1%</td><td>54</td><td>230 条</td></tr>
+        <tr><td>版本前瞻 3 分钟速看</td><td>48.0万</td><td>6.2%</td><td>21</td><td>180 条</td></tr>
+        <tr><td>圣遗物副本刷哪个</td><td>39.7万</td><td>7.5%</td><td>33</td><td>96 条</td></tr>
+      </table></div>
+    </div>
+
+    <div class="tab" id="t-group">
+      <h2>QQ 群聊反馈</h2>
+      <div class="grid2">
+        <div class="panel"><h4>群日活 & 发言数</h4><canvas id="c-dau"></canvas></div>
+        <div class="panel"><h4>本周热门问题</h4>
+          <ol class="rank"><li>新角色抽不抽 <i>146</i></li><li>深渊 12 层下半配队 <i>98</i></li><li>今晚开不开播 <i>87</i></li><li>圣遗物副本怎么刷 <i>54</i></li><li>周本组队 <i>41</i></li></ol>
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="panel"><h4>情绪分布</h4><canvas id="c-senti"></canvas></div>
+        <div class="panel"><h4>群秩序</h4><div class="kv"><span>拦截广告</span><b>23</b></div><div class="kv"><span>引战警告</span><b>4</b></div><div class="kv"><span>新人破冰</span><b>213</b></div><div class="kv"><span>组队撮合成功</span><b>67</b></div></div>
+        <div class="panel"><h4>粉丝想对你说 <small>分身汇总</small></h4><p class="quote">“希望多出剧情解析”×32<br>“直播时间能固定吗”×18<br>“想要老张同款周边”×15</p></div>
+      </div>
+    </div>
+
+    <div class="tab" id="t-todo">
+      <h2>待办与数字分身</h2>
+      <div class="grid2">
+        <div class="panel"><h4>需你亲自处理 <small>已从 1,240 条消息中筛出</small></h4>
+          <div class="todo"><span class="tag gold">舰长</span> <b>阿月</b>：老张，上期视频那个配队我想到个改进…<div class="ops"><button class="mini" onclick="toast('已用分身语气回复：好思路！下期视频会提到你～')">一键分身回复</button><button class="mini ghost" onclick="toast('已打开私聊')">亲自回复</button></div></div>
+          <div class="todo"><span class="tag blue">商务</span> <b>某外设品牌</b>：想约 11 月直播口播…<div class="ops"><button class="mini" onclick="go('biz')">去商单管理</button></div></div>
+          <div class="todo"><span class="tag">未能回答</span> <b>小雷</b>：老张会做 PV 解析吗？<div class="ops"><button class="mini" onclick="toast('已回复并加入选题池')">一键回复</button></div></div>
+        </div>
+        <div class="panel"><h4>数字分身设置</h4>
+          <div class="kv"><span>人设语气</span><b>热情、爱玩梗、称呼粉丝"旅行者"</b></div>
+          <div class="kv"><span>知识来源</span><b>已学习 128 期视频文稿 + 42 条动态</b></div>
+          <div class="kv"><span>声音克隆</span><b>已开启（语音回复）</b></div>
+          <div class="kv"><span>直接升级给本人</span><b>舰长消息 / 选题建议 / 商务</b></div>
+          <div class="kv"><span>身份标识</span><b>所有回复带「AI分身」标签</b></div>
+          <label class="sw"><input type="checkbox" checked> 允许分身主动问候流失粉丝</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="t-game">
+      <h2>游戏更新通知</h2>
+      <div class="panel">
+        <div class="todo"><span class="tag blue">版本</span> <b>新版本前瞻直播</b> · 10.18 20:00<div class="ops"><button class="mini" onclick="toast('已生成群通知草稿，并为订阅粉丝定向推送')">生成群通知</button></div></div>
+        <div class="todo"><span class="tag blue">卡池</span> <b>限定角色复刻</b> · 10.22 上线<div class="ops"><button class="mini" onclick="toast('已加入选题建议：抽卡建议')">加入选题</button></div></div>
+        <div class="todo"><span class="tag blue">活动</span> <b>限时活动「秋日庆典」</b> · 奖励含 420 原石<div class="ops"><button class="mini" onclick="toast('分身已学习活动规则，可回答粉丝提问')">让分身学习</button></div></div>
+        <div class="todo"><span class="tag">兑换码</span> <b>前瞻直播兑换码</b> · 预计 10.18<div class="ops"><button class="mini" onclick="toast('已设置：兑换码发布后优先推送给会员')">会员优先推送</button></div></div>
+      </div>
+    </div>
+
+    <div class="tab" id="t-biz">
+      <h2>商单管理与预定</h2>
+      <div class="kpis small">
+        <div class="kpi"><span>进行中</span><b>3</b></div><div class="kpi"><span>本月商单收入</span><b>¥42,000</b></div><div class="kpi"><span>群内推荐点击率</span><b>6.8%</b></div><div class="kpi"><span>推荐后退群率</span><b>0.2%</b><i class="up">护栏正常</i></div>
+      </div>
+      <div class="panel"><h4>档期日历 · 11 月 <small>点击空档可开放预定</small></h4><div class="cal" id="cal"></div></div>
+      <div class="panel"><table>
+        <tr><th>品牌</th><th>形式</th><th>定向粉丝</th><th>触发场景</th><th>状态</th></tr>
+        <tr><td>某外设品牌</td><td>直播口播 + 群内推荐</td><td>兴趣：设备/手柄 · 312 人</td><td>粉丝问"卡不卡/用什么手柄"</td><td><span class="tag blue">待确认</span></td></tr>
+        <tr><td>某手机品牌</td><td>视频植入</td><td>兴趣：移动端 · 540 人</td><td>粉丝问"手机发热/画质"</td><td><span class="tag green">投放中</span></td></tr>
+        <tr><td>官方周边店</td><td>会员专属折扣</td><td>攻略会员以上</td><td>签到满 7 天</td><td><span class="tag green">投放中</span></td></tr>
+      </table>
+      <p class="hint">规则：每位粉丝每周最多 1 条商业推荐；点踩率 &gt;10% 自动暂停。</p></div>
+    </div>
+
+    <div class="tab" id="t-sub">
+      <h2>订阅会员</h2>
+      <div class="kpis small">
+        <div class="kpi"><span>付费会员</span><b>612</b><i class="up">+88</i></div><div class="kpi"><span>月收入</span><b>¥18,640</b></div><div class="kpi"><span>续费率</span><b>73%</b></div><div class="kpi"><span>免费→付费转化</span><b>4.1%</b></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h4>会员结构</h4><canvas id="c-sub"></canvas></div>
+        <div class="panel"><h4>档位配置</h4>
+          <div class="tier-row"><b>旅行者</b> 免费 · 群内问答 / 签到 / 开播提醒</div>
+          <div class="tier-row"><b>攻略会员</b> ¥12/月 · 配队诊断 / 会员攻略 / 抽奖双倍</div>
+          <div class="tier-row"><b>冒险家舰长</b> ¥68/月 · 分身 1v1 / 老张亲回 / 直播连麦 / 周边折扣</div>
+          <p class="hint">收入分配示意：创作者 70% · 平台 30%</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
